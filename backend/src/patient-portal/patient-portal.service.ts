@@ -2,10 +2,14 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../core/services/prisma.service';
 import { BookAppointmentDto } from './dto/book-appointment.dto';
 import { UpdatePatientProfileDto } from './dto/update-profile.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class PatientPortalService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notifications: NotificationService,
+  ) {}
 
   async getProfile(userId: number) {
     const patient = await this.prisma.patient.findUnique({
@@ -61,7 +65,7 @@ export class PatientPortalService {
       throw new BadRequestException('Appointments must be between 08:00 and 18:00');
     }
 
-    return this.prisma.appointment.create({
+    const appt = await this.prisma.appointment.create({
       data: {
         date: new Date(dto.date),
         startTime: new Date(dto.startTime),
@@ -70,9 +74,22 @@ export class PatientPortalService {
         doctor: { connect: { id: dto.doctorId } },
       },
       include: {
-        doctor: { select: { firstName: true, lastName: true, specialty: true } },
+        doctor: { select: { firstName: true, lastName: true, specialty: true, userId: true } },
       },
     });
+
+    // Notify patient
+    await this.notifications.create(
+      userId,
+      `Your appointment with Dr. ${appt.doctor.firstName} ${appt.doctor.lastName} has been booked.`,
+    );
+    // Notify doctor
+    await this.notifications.create(
+      appt.doctor.userId,
+      `New appointment booked by ${patient.firstName} ${patient.lastName}.`,
+    );
+
+    return appt;
   }
 
   async cancelAppointment(userId: number, appointmentId: number) {
@@ -84,7 +101,12 @@ export class PatientPortalService {
     if (appt.patientId !== patient.id) throw new BadRequestException('Not your appointment');
     if (new Date(appt.date) < new Date()) throw new BadRequestException('Cannot cancel a past appointment');
 
-    return this.prisma.appointment.delete({ where: { id: appointmentId } });
+    const deleted = await this.prisma.appointment.delete({ where: { id: appointmentId } });
+
+    // Notify patient
+    await this.notifications.create(userId, `Your appointment has been cancelled.`);
+
+    return deleted;
   }
 
   async getMyMedicalRecords(userId: number) {

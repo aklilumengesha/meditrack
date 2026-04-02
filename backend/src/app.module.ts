@@ -9,6 +9,7 @@ import { MedicalRecordModule } from './medical-record/medical-record.module';
 import { AuthModule } from './auth/auth.module';
 import { DoctorModule } from './doctor/doctor.module';
 import { PatientPortalModule } from './patient-portal/patient-portal.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PatientPortalModule } from './patient-portal/patient-portal.module';
     DoctorModule,
     PatientModule,
     PatientPortalModule,
+    NotificationModule,
     AppointmentModule,
     MedicalRecordModule,
   ],

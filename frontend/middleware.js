@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+const adminRoutes = ["/admin"];
 const doctorRoutes = ["/doctor"];
 const patientRoutes = ["/patient"];
 const publicRoutes = ["/login", "/register"];
@@ -24,9 +25,13 @@ export function middleware(request) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  if (adminRoutes.some((r) => pathname.startsWith(r)) && role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/doctor/:path*", "/patient/:path*"],
+  matcher: ["/doctor/:path*", "/patient/:path*", "/admin/:path*"],
 };

@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
     setUser({ token, role });
     if (role === "DOCTOR") router.push("/doctor/dashboard");
     else if (role === "PATIENT") router.push("/patient/dashboard");
+    else if (role === "ADMIN") router.push("/admin/dashboard");
     else router.push("/dashboard");
   };
 

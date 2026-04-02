@@ -13,6 +13,7 @@ export default function Home() {
     if (!user) router.push("/login");
     else if (user.role === "DOCTOR") router.push("/doctor/dashboard");
     else if (user.role === "PATIENT") router.push("/patient/dashboard");
+    else if (user.role === "ADMIN") router.push("/admin/dashboard");
     else router.push("/dashboard");
   }, [user, loading]);
 

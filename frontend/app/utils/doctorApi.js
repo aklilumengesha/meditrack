@@ -31,7 +31,8 @@ export const updateMyProfile = async (data) => {
   return res.data;
 };
 
-export const getAllDoctors = async () => {
-  const res = await axios.get(`${BASE_URL}/doctors`, authHeaders());
+export const getAllDoctors = async (specialty = '') => {
+  const params = specialty ? { params: { specialty } } : {};
+  const res = await axios.get(`${BASE_URL}/doctors`, { ...authHeaders(), ...params });
   return res.data;
 };

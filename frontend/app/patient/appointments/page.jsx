@@ -18,18 +18,19 @@ export default function PatientAppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [showBook, setShowBook] = useState(false);
   const [filter, setFilter] = useState("upcoming");
+  const [specialty, setSpecialty] = useState("");
   const [form, setForm] = useState({ doctorId: "", reason: "", dateTime: dayjs() });
 
   const fetchAll = async () => {
     try {
-      const [appts, docs] = await Promise.all([getPatientAppointments(), getAllDoctors()]);
+      const [appts, docs] = await Promise.all([getPatientAppointments(), getAllDoctors(specialty)]);
       setAppointments(appts);
       setDoctors(docs);
     } catch { toast.error("Failed to load data"); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchAll(); }, []);
+  useEffect(() => { fetchAll(); }, [specialty]);
 
   const now = new Date();
   const filtered = appointments.filter((a) =>
@@ -132,6 +133,11 @@ export default function PatientAppointmentsPage() {
               </button>
             </div>
             <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Filter by Specialty</label>
+                <input className="input-modern" placeholder="e.g. Cardiology"
+                  value={specialty} onChange={(e) => setSpecialty(e.target.value)} />
+              </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Select Doctor</label>
                 <select className="input-modern" value={form.doctorId} onChange={(e) => setForm({ ...form, doctorId: e.target.value })}>

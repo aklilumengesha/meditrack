@@ -78,25 +78,16 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right — doctor image with floating badges */}
+          {/* Right — doctor image seamlessly integrated */}
           <div className="relative hidden lg:flex items-center justify-center h-[560px]">
-            {/* Doctor image */}
-            <div className="relative z-10 w-[420px] h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+            {/* Doctor image — no container, blends into hero bg */}
+            <div className="relative z-10 w-[420px] h-[520px]">
               <img
-                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80"
+                src="https://www.pngall.com/wp-content/uploads/2016/04/Doctor-PNG-Image.png"
                 alt="Doctor"
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-contain drop-shadow-2xl"
+                style={{ filter: "drop-shadow(0 20px 40px rgba(59,130,246,0.25))" }}
               />
-              {/* Gradient overlay at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-blue-900/60 to-transparent" />
-              {/* Name badge on image */}
-              <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between">
-                <div>
-                  <p className="text-white font-bold text-lg">Dr. James Doe</p>
-                  <p className="text-blue-200 text-sm">Cardiologist · ⭐ 4.9</p>
-                </div>
-                <span className="bg-green-400 text-white text-xs font-bold px-3 py-1.5 rounded-full">Available</span>
-              </div>
             </div>
 
             {/* Floating badges — z-30 to stay above image */}

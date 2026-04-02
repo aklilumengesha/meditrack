@@ -10,11 +10,11 @@ export default function Home() {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) router.push("/login");
+    if (!user) router.push("/landing");
     else if (user.role === "DOCTOR") router.push("/doctor/dashboard");
     else if (user.role === "PATIENT") router.push("/patient/dashboard");
     else if (user.role === "ADMIN") router.push("/admin/dashboard");
-    else router.push("/dashboard");
+    else router.push("/landing");
   }, [user, loading]);
 
   return null;

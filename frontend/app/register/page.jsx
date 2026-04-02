@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Link from "next/link";
 import { FaHeartbeat, FaUserMd, FaUserInjured } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
 
 const BASE_URL = "http://localhost:3000";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const { login } = useAuth();
+  const searchParams = useSearchParams();
   const [role, setRole] = useState("PATIENT");
   const [form, setForm] = useState({
     email: "", password: "", firstName: "", lastName: "",
@@ -19,6 +21,11 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
+
+  useEffect(() => {
+    const r = searchParams.get("role");
+    if (r === "DOCTOR" || r === "PATIENT") setRole(r);
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -168,5 +175,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }

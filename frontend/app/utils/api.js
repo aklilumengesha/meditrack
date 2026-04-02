@@ -1,7 +1,27 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-const BASE_URL = 'http://localhost:3000'; 
+const BASE_URL = 'http://localhost:3000';
+
+/**************************************** Auth Functions ****************************************/
+
+export const registerUser = async (data) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/register`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Registration failed');
+  }
+};
+
+export const loginUser = async (data) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/login`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Login failed');
+  }
+};
 
 /**************************************** Patient Controller Functions ****************************************/
 

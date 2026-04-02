@@ -1,4 +1,4 @@
-import { IsDate, IsDateString, IsNotEmpty, IsOptional, IsString } from "@nestjs/class-validator";
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from "@nestjs/class-validator";
 
 export class CreateAppointmentDto {
 
@@ -8,11 +8,11 @@ export class CreateAppointmentDto {
 
     @IsNotEmpty()
     @IsDateString()
-    startTime : string;
+    startTime: string;
 
+    @IsNumber()
     @IsNotEmpty()
-    @IsString()
-    doctor: string;
+    doctorId: number;
 
     @IsString()
     @IsOptional()

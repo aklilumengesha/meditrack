@@ -20,7 +20,7 @@ const stats = [
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 pt-20">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 pt-16">
       {/* Background blobs */}
       <div className="hero-blob w-96 h-96 bg-blue-500 top-10 -left-20" />
       <div className="hero-blob w-80 h-80 bg-cyan-400 bottom-20 right-10" style={{ animationDelay: "3s" }} />
@@ -30,7 +30,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 opacity-[0.03]"
         style={{ backgroundImage: "radial-gradient(circle, #1d4ed8 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
 
-      <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 py-10 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left content */}
           <div className="space-y-8">

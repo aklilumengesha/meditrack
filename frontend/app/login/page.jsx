@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Link from "next/link";
+import { FaEnvelope, FaLock, FaHeartbeat } from "react-icons/fa";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -28,57 +29,99 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-blue-900">Meditrack</h1>
-          <p className="text-gray-500 mt-1">Sign in to your account</p>
+    <div className="min-h-screen flex">
+      {/* Left panel */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 flex-col justify-between p-12">
+        <div className="flex items-center gap-3">
+          <FaHeartbeat className="text-white text-3xl" />
+          <span className="text-white text-2xl font-extrabold tracking-tight">Meditrack</span>
         </div>
+        <div>
+          <h2 className="text-4xl font-extrabold text-white leading-tight mb-4">
+            Your health,<br />managed smarter.
+          </h2>
+          <p className="text-blue-200 text-lg">
+            A unified platform for doctors and patients to manage appointments, records, and care.
+          </p>
+        </div>
+        <div className="flex gap-6">
+          {["Secure", "Fast", "Reliable"].map((tag) => (
+            <span key={tag} className="bg-white/10 text-white text-sm px-4 py-2 rounded-full font-medium">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 text-sm rounded-lg p-3 mb-4">
-            {error}
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-gray-50">
+        <div className="w-full max-w-md animate-fade-in">
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-6 lg:hidden">
+              <FaHeartbeat className="text-blue-600 text-2xl" />
+              <span className="text-xl font-extrabold text-gray-900">Meditrack</span>
+            </div>
+            <h1 className="text-3xl font-extrabold text-gray-900">Welcome back</h1>
+            <p className="text-gray-500 mt-2">Sign in to your account to continue</p>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              required
-              className="input input-bordered w-full"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              required
-              className="input input-bordered w-full"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="••••••••"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary w-full mt-2"
-          >
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
-        </form>
+          {error && (
+            <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl p-4 mb-6 flex items-center gap-2">
+              <span className="text-red-400">⚠</span> {error}
+            </div>
+          )}
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-blue-600 font-medium hover:underline">
-            Register
-          </Link>
-        </p>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Email address</label>
+              <div className="relative">
+                <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                <input
+                  type="email"
+                  required
+                  className="input-modern pl-11"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <div className="relative">
+                <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                <input
+                  type="password"
+                  required
+                  className="input-modern pl-11"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-modern-primary w-full py-3 text-base mt-2"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="loading loading-spinner loading-sm"></span> Signing in...
+                </span>
+              ) : "Sign In"}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-gray-500 mt-8">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="text-blue-600 font-semibold hover:underline">
+              Create one
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

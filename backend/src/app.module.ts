@@ -7,12 +7,14 @@ import { PatientModule } from './patient/patient.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { MedicalRecordModule } from './medical-record/medical-record.module';
 import { AuthModule } from './auth/auth.module';
+import { DoctorModule } from './doctor/doctor.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     CoreModule,
     AuthModule,
+    DoctorModule,
     PatientModule,
     AppointmentModule,
     MedicalRecordModule,

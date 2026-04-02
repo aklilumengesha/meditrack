@@ -13,6 +13,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User model for authentication
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String
+  role         Role     @default(PATIENT)
+  createdAt    DateTime @default(now())
+  doctor       Doctor?
+  patient      Patient?
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  PATIENT
+}
+
+// Doctor profile
+model Doctor {
+  id           Int           @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  specialty    String
+  phone        String?
+  user         User          @relation(fields: [userId], references: [id])
+  userId       Int           @unique
+  appointments Appointment[]
+}
+
 // Modele pour les patients
 model Patient {
   id                Int      @id @default(autoincrement())
@@ -20,6 +49,8 @@ model Patient {
   lastName          String
   birthDate         DateTime
   address           String?
+  user              User?         @relation(fields: [userId], references: [id])
+  userId            Int?          @unique
   appointments      Appointment[]
   medicalRecords    MedicalRecord[]
 }
@@ -29,10 +60,11 @@ model Appointment {
   id               Int      @id @default(autoincrement())
   date             DateTime
   startTime        DateTime
-  doctor           String
   reason           String?
   patient          Patient   @relation(fields: [patientId], references: [id])
   patientId        Int
+  doctor           Doctor    @relation(fields: [doctorId], references: [id])
+  doctorId         Int
 }
 
 // Modele pour l'historique médical

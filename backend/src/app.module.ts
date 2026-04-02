@@ -8,6 +8,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { MedicalRecordModule } from './medical-record/medical-record.module';
 import { AuthModule } from './auth/auth.module';
 import { DoctorModule } from './doctor/doctor.module';
+import { PatientPortalModule } from './patient-portal/patient-portal.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DoctorModule } from './doctor/doctor.module';
     AuthModule,
     DoctorModule,
     PatientModule,
+    PatientPortalModule,
     AppointmentModule,
     MedicalRecordModule,
   ],

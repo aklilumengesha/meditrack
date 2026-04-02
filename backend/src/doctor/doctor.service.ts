@@ -9,6 +9,15 @@ export class DoctorService {
   async findAll() {
     return this.prisma.doctor.findMany({
       include: { user: { select: { email: true } } },
+      orderBy: { lastName: 'asc' },
+    });
+  }
+
+  async findBySpecialty(specialty: string) {
+    return this.prisma.doctor.findMany({
+      where: { specialty: { contains: specialty, mode: 'insensitive' } },
+      include: { user: { select: { email: true } } },
+      orderBy: { lastName: 'asc' },
     });
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Body, Param, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Put, Body, Param, ParseIntPipe, UseGuards, Request, Query } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -12,8 +12,8 @@ export class DoctorController {
   constructor(private readonly doctorService: DoctorService) {}
 
   @Get()
-  @Roles(Role.ADMIN, Role.PATIENT)
-  findAll() {
+  findAll(@Query('specialty') specialty?: string) {
+    if (specialty) return this.doctorService.findBySpecialty(specialty);
     return this.doctorService.findAll();
   }
 

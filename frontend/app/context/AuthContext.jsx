@@ -22,6 +22,9 @@ export const AuthProvider = ({ children }) => {
   const login = (token, role) => {
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
+    // set cookies for middleware
+    document.cookie = `token=${token}; path=/`;
+    document.cookie = `role=${role}; path=/`;
     setUser({ token, role });
     if (role === "DOCTOR") router.push("/doctor/dashboard");
     else if (role === "PATIENT") router.push("/patient/dashboard");
@@ -31,6 +34,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     setUser(null);
     router.push("/login");
   };

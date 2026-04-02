@@ -83,7 +83,7 @@ export default function HeroSection() {
             {/* Doctor image — no container, blends into hero bg */}
             <div className="relative z-10 w-[420px] h-[520px]">
               <img
-                src="https://www.freepnglogos.com/uploads/doctor-png/doctor-png-image-pngfre-32.png"
+                src="/doctor.png"
                 alt="Doctor"
                 className="w-full h-full object-contain drop-shadow-2xl"
                 style={{ filter: "drop-shadow(0 20px 40px rgba(59,130,246,0.25))" }}

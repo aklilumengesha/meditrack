@@ -2,77 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
- @layer base {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
   button {
     cursor: pointer;
   }
- }
-
- @font-face {
-  font-family: 'Poppins';
-  font-weight: 400;
-  src: url('../fonts/poppins-bold-webfont.woff2')  format('woff2'),
-       url('../fonts/poppins-bold-webfont.woff')  format('woff');
- }
-
- @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
-body {
-  font-family: 'Poppins', sans-serif !important;
 }
 
-/* Warning Toast */
-.Toastify__toast--warning {
-  background: #e7a62e !important; /* Yellow background */
-  color: #ffffff !important;      /* White text */
+@layer components {
+  /* Card */
+  .card-modern {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center gap-4 hover:shadow-md transition-shadow;
+  }
+
+  /* Page title */
+  .page-title {
+    @apply text-3xl font-extrabold text-gray-900 tracking-tight;
+  }
+
+  /* Section title */
+  .section-title {
+    @apply text-lg font-bold text-gray-800 mb-4;
+  }
+
+  /* Badge */
+  .badge-status {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  /* Input */
+  .input-modern {
+    @apply w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition;
+  }
+
+  /* Button primary */
+  .btn-modern-primary {
+    @apply px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50;
+  }
+
+  /* Button outline */
+  .btn-modern-outline {
+    @apply px-5 py-2.5 border border-gray-200 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-colors;
+  }
+
+  /* Sidebar link */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200;
+  }
+
+  /* Table row */
+  .table-row-modern {
+    @apply flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors;
+  }
 }
 
-/* Toast Body */
-.Toastify__toast-body {
-  font-family: "Atlas Grotesk Web", Arial, Helvetica, sans-serif;
+/* Toast overrides */
+.Toastify__toast {
+  border-radius: 12px !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 0.875rem !important;
-  font-weight: bold;
-  color: #ffffff !important;      /* White text */
+  font-weight: 500 !important;
 }
-
-/* Toast Progress Bar */
-.Toastify__toast-progress {
-  background: #333F48 !important;
+.Toastify__toast--warning {
+  background: #f59e0b !important;
+  color: #fff !important;
 }
-
-/* Icon Color */
-.Toastify__toast-icon {
-  color: #ffffff !important; /* White icon color */
-}
-
-/* Error Toast */
 .Toastify__toast--error {
-  background: #e61317 !important; /* Red background */
+  background: #ef4444 !important;
+  color: #fff !important;
 }
-
-/* Info Toast */
+.Toastify__toast--success {
+  background: #10b981 !important;
+  color: #fff !important;
+}
 .Toastify__toast--info {
-  background: #31a9f4 !important; /* Light blue background */
-  color: #ffffff !important;      /* White text */
+  background: #3b82f6 !important;
+  color: #fff !important;
+}
+.Toastify__toast-body {
+  color: #fff !important;
 }
 
-/* Global Styles */
-body {
-  background: url('../public/bg.jpg') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Roboto', sans-serif; 
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
+/* Calendar */
+.rbc-calendar {
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+.rbc-header {
+  background: #f1f5f9;
+  padding: 10px 0;
+  font-weight: 600;
+  color: #475569;
+}
+.rbc-today {
+  background-color: #eff6ff !important;
+}
+.rbc-event {
+  border-radius: 6px !important;
+  font-size: 0.75rem !important;
 }
 
-.current-day {
-  background-color: #3ba7ff !important; 
-  color: black !important; 
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
-.scroll-container {
-  scroll-behavior: smooth;
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}

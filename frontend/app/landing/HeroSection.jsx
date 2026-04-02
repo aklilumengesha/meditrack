@@ -85,7 +85,7 @@ export default function HeroSection() {
               <img
                 src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80"
                 alt="Doctor"
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover object-center"
               />
               {/* Gradient overlay at bottom */}
               <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-blue-900/60 to-transparent" />
@@ -99,14 +99,14 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Floating badges */}
+            {/* Floating badges — z-30 to stay above image */}
             {floatingBadges.map(({ icon: Icon, label, color, delay }) => (
-              <div key={label} className={`absolute float-badge flex items-center gap-2 ${color} border text-xs font-semibold px-3 py-2 rounded-full shadow-sm`}
+              <div key={label} className={`absolute z-30 float-badge flex items-center gap-2 ${color} border text-xs font-semibold px-3 py-2 rounded-full shadow-md`}
                 style={{
                   animationDelay: delay,
-                  top: label === "Real-time Monitoring" ? "8%" : label === "Verified Doctors" ? "75%" : label === "Secure & Private" ? "45%" : "20%",
-                  right: label === "Real-time Monitoring" ? "2%" : label === "Verified Doctors" ? "2%" : undefined,
-                  left: label === "Secure & Private" ? "2%" : label === "24/7 Access" ? "2%" : undefined,
+                  top: label === "Real-time Monitoring" ? "6%" : label === "Verified Doctors" ? "72%" : label === "Secure & Private" ? "42%" : "18%",
+                  right: label === "Real-time Monitoring" ? "-2%" : label === "Verified Doctors" ? "-2%" : undefined,
+                  left: label === "Secure & Private" ? "-4%" : label === "24/7 Access" ? "-4%" : undefined,
                 }}>
                 <Icon className="text-sm" />
                 {label}

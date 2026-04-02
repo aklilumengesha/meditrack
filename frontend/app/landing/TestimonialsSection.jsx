@@ -31,33 +31,6 @@ const testimonials = [
     stars: 5,
     quote: "I love how I can filter doctors by specialty and see their availability in real time. The notification system keeps me updated on every appointment change. It feels like having a personal health assistant.",
   },
-  {
-    name: "Dr. Amara Diallo",
-    role: "General Practitioner",
-    initials: "AD",
-    color: "from-orange-500 to-orange-600",
-    badge: "bg-orange-50 text-orange-700",
-    stars: 5,
-    quote: "The analytics dashboard gives me insights I never had before. I can see patterns in diagnoses, track visit types, and export reports for my clinic. Meditrack is the future of practice management.",
-  },
-  {
-    name: "Marcus Thompson",
-    role: "Patient",
-    initials: "MT",
-    color: "from-rose-500 to-rose-700",
-    badge: "bg-rose-50 text-rose-700",
-    stars: 5,
-    quote: "Managing my chronic condition used to be stressful. Now I have all my records, medications, and appointments in one place. My doctor and I are always on the same page. Truly life-changing.",
-  },
-  {
-    name: "Dr. Priya Sharma",
-    role: "Pediatrician",
-    initials: "PS",
-    color: "from-cyan-500 to-cyan-700",
-    badge: "bg-cyan-50 text-cyan-700",
-    stars: 5,
-    quote: "The role-based system is brilliant. My patients see exactly what they need, and I see exactly what I need. The security and privacy features give both me and my patients complete peace of mind.",
-  },
 ];
 
 export default function TestimonialsSection() {

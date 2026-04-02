@@ -9,6 +9,8 @@ import {
   FaSignOutAlt, FaHeartbeat, FaBars, FaTimes,
 } from "react-icons/fa";
 
+import NotificationBell from "../components/shared/NotificationBell";
+
 const navItems = [
   { href: "/doctor/dashboard", label: "Dashboard", icon: FaHome },
   { href: "/doctor/patients", label: "My Patients", icon: FaUsers },
@@ -79,7 +81,10 @@ export default function DoctorLayout({ children }) {
         </nav>
 
         {/* Sign out */}
-        <div className="p-3 border-t border-slate-700">
+        <div className="p-3 border-t border-slate-700 space-y-1">
+          <div className="px-3 py-2">
+            <NotificationBell />
+          </div>
           <button
             onClick={logout}
             title={collapsed ? "Sign Out" : ""}

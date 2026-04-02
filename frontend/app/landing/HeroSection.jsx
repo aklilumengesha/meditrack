@@ -48,7 +48,7 @@ export default function HeroSection() {
                 <span className="gradient-text">Managed Smarter</span>
               </h1>
               <p className="text-xl text-gray-500 leading-relaxed max-w-lg">
-                Meditrack connects patients with top doctors for seamless appointment booking, medical record management, and personalized healthcare — all in one place.
+                Book appointments with verified doctors and manage your health records securely in one place.
               </p>
             </div>
 
@@ -83,7 +83,11 @@ export default function HeroSection() {
             {/* Main card */}
             <div className="absolute w-80 bg-white rounded-3xl shadow-2xl p-6 border border-gray-100 z-20 top-16 left-8">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-white font-bold text-lg">JD</div>
+                <img
+                  src="https://randomuser.me/api/portraits/men/32.jpg"
+                  alt="Dr. James Doe"
+                  className="w-12 h-12 rounded-2xl object-cover"
+                />
                 <div>
                   <p className="font-bold text-gray-800">Dr. James Doe</p>
                   <p className="text-xs text-gray-400">Cardiologist · ⭐ 4.9</p>

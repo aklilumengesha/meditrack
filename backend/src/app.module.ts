@@ -11,6 +11,8 @@ import { DoctorModule } from './doctor/doctor.module';
 import { PatientPortalModule } from './patient-portal/patient-portal.module';
 import { NotificationModule } from './notification/notification.module';
 
+import { AdminModule } from './admin/admin.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -20,6 +22,7 @@ import { NotificationModule } from './notification/notification.module';
     PatientModule,
     PatientPortalModule,
     NotificationModule,
+    AdminModule,
     AppointmentModule,
     MedicalRecordModule,
   ],

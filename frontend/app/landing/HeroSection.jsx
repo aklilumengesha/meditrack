@@ -78,63 +78,35 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right — visual card stack */}
+          {/* Right — doctor image with floating badges */}
           <div className="relative hidden lg:flex items-center justify-center h-[560px]">
-            {/* Main card */}
-            <div className="absolute w-80 bg-white rounded-3xl shadow-2xl p-6 border border-gray-100 z-20 top-16 left-8">
-              <div className="flex items-center gap-3 mb-5">
-                <img
-                  src="https://randomuser.me/api/portraits/men/32.jpg"
-                  alt="Dr. James Doe"
-                  className="w-12 h-12 rounded-2xl object-cover"
-                />
+            {/* Doctor image */}
+            <div className="relative z-10 w-[420px] h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80"
+                alt="Doctor"
+                className="w-full h-full object-cover object-top"
+              />
+              {/* Gradient overlay at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-blue-900/60 to-transparent" />
+              {/* Name badge on image */}
+              <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between">
                 <div>
-                  <p className="font-bold text-gray-800">Dr. James Doe</p>
-                  <p className="text-xs text-gray-400">Cardiologist · ⭐ 4.9</p>
+                  <p className="text-white font-bold text-lg">Dr. James Doe</p>
+                  <p className="text-blue-200 text-sm">Cardiologist · ⭐ 4.9</p>
                 </div>
-                <span className="ml-auto bg-green-100 text-green-600 text-xs font-semibold px-2.5 py-1 rounded-full">Available</span>
-              </div>
-              <div className="space-y-2 mb-5">
-                {["Mon 9:00 AM", "Mon 11:00 AM", "Tue 2:00 PM"].map((slot, i) => (
-                  <div key={slot} className={`flex items-center justify-between p-2.5 rounded-xl text-sm ${i === 0 ? "bg-blue-600 text-white" : "bg-gray-50 text-gray-600"}`}>
-                    <span>{slot}</span>
-                    {i === 0 ? <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">Selected</span> : <span className="text-xs text-gray-400">Open</span>}
-                  </div>
-                ))}
-              </div>
-              <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold rounded-xl text-sm">
-                Confirm Appointment
-              </button>
-            </div>
-
-            {/* Medical record card */}
-            <div className="absolute w-72 bg-white rounded-3xl shadow-xl p-5 border border-gray-100 z-10 bottom-10 right-4">
-              <div className="flex items-center justify-between mb-4">
-                <p className="font-bold text-gray-800 text-sm">Medical Summary</p>
-                <span className="bg-teal-100 text-teal-600 text-xs font-semibold px-2.5 py-1 rounded-full">Updated</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: "Blood Pressure", value: "120/80", color: "bg-red-50 text-red-600" },
-                  { label: "Heart Rate", value: "72 bpm", color: "bg-pink-50 text-pink-600" },
-                  { label: "Temperature", value: "36.6°C", color: "bg-orange-50 text-orange-600" },
-                  { label: "Weight", value: "70 kg", color: "bg-teal-50 text-teal-600" },
-                ].map(({ label, value, color }) => (
-                  <div key={label} className={`${color} rounded-xl p-2.5`}>
-                    <p className="text-xs opacity-70">{label}</p>
-                    <p className="font-bold text-sm mt-0.5">{value}</p>
-                  </div>
-                ))}
+                <span className="bg-green-400 text-white text-xs font-bold px-3 py-1.5 rounded-full">Available</span>
               </div>
             </div>
 
             {/* Floating badges */}
             {floatingBadges.map(({ icon: Icon, label, color, delay }) => (
               <div key={label} className={`absolute float-badge flex items-center gap-2 ${color} border text-xs font-semibold px-3 py-2 rounded-full shadow-sm`}
-                style={{ animationDelay: delay,
+                style={{
+                  animationDelay: delay,
                   top: label === "Real-time Monitoring" ? "8%" : label === "Verified Doctors" ? "75%" : label === "Secure & Private" ? "45%" : "20%",
-                  right: label === "Real-time Monitoring" ? "5%" : label === "Verified Doctors" ? "2%" : undefined,
-                  left: label === "Secure & Private" ? "2%" : label === "24/7 Access" ? "5%" : undefined,
+                  right: label === "Real-time Monitoring" ? "2%" : label === "Verified Doctors" ? "2%" : undefined,
+                  left: label === "Secure & Private" ? "2%" : label === "24/7 Access" ? "2%" : undefined,
                 }}>
                 <Icon className="text-sm" />
                 {label}

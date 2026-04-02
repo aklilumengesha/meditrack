@@ -38,7 +38,8 @@ export class AppointmentService {
       const existingAppointment = await this.prisma.appointment.findFirst({
         where: {
           date: new Date(data.date),
-          startTime: new Date(data.startTime), 
+          startTime: new Date(data.startTime),
+          doctorId: data.doctorId,
         },
       });
 
@@ -49,10 +50,10 @@ export class AppointmentService {
       return await this.prisma.appointment.create({
         data: {
           date: new Date(data.date),
-          startTime: new Date(data.startTime), 
-          doctor: data.doctor,
+          startTime: new Date(data.startTime),
           reason: data.reason,
           patient: { connect: { id: data.patientId } },
+          doctor: { connect: { id: data.doctorId } },
         },
       });
 
@@ -75,17 +76,16 @@ export class AppointmentService {
         throw new NotFoundException(`Appointment with ID ${id} not found`);
       }
 
-      const { date, startTime, doctor, reason, patientId } = data;
+      const { date, startTime, doctorId, reason, patientId } = data;
 
       return await this.prisma.appointment.update({
         where:{id},
         data: {
           date: date ? new Date(date) : undefined,
           startTime: startTime ? new Date(startTime) : undefined,
-          doctor,
           reason,
-          patient: patientId ? {connect: {id: patientId}} : undefined,
-
+          patient: patientId ? { connect: { id: patientId } } : undefined,
+          doctor: doctorId ? { connect: { id: doctorId } } : undefined,
         },
       });
 
@@ -154,24 +154,16 @@ export class AppointmentService {
     }
   }
 
-  // Function to fetch appointments with patient details
+  // Function to fetch appointments with patient and doctor details
   async getAppointmentsWithDetails(): Promise<any[]> {
     try {
       const appointments = await this.prisma.appointment.findMany({
         include: {
-          patient: {
-            select: {
-              firstName: true,
-              lastName: true
-            }
-          }
+          patient: { select: { firstName: true, lastName: true } },
+          doctor: { select: { firstName: true, lastName: true, specialty: true } },
         },
-        orderBy: [
-          { date: 'asc' },
-          { startTime: 'asc' }
-        ]
+        orderBy: [{ date: 'asc' }, { startTime: 'asc' }],
       });
-
       return appointments;
     } catch (error) {
       throw new Error(`Failed to fetch appointments with details: ${error.message}`);

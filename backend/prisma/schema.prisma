@@ -19,6 +19,7 @@ model User {
   email        String   @unique
   password     String
   role         Role     @default(PATIENT)
+  active       Boolean  @default(true)
   createdAt    DateTime @default(now())
   doctor       Doctor?
   patient      Patient?

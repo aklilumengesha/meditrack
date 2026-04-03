@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllUsers, deleteUser } from "../../utils/adminApi";
-import { FaTrash, FaSearch, FaUserMd, FaUserInjured, FaShieldAlt } from "react-icons/fa";
+import { getAllUsers, deleteUser, toggleUserActive, changeUserRole, resetUserPassword } from "../../utils/adminApi";
+import { FaTrash, FaSearch, FaUserMd, FaUserInjured, FaShieldAlt, FaToggleOn, FaToggleOff, FaKey, FaUserTag } from "react-icons/fa";
 import dayjs from "dayjs";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,23 +19,44 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [confirmId, setConfirmId] = useState(null);
+  const [roleModal, setRoleModal] = useState(null);
+  const [passwordModal, setPasswordModal] = useState(null);
+  const [newRole, setNewRole] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    getAllUsers().then(setUsers).catch(console.error).finally(() => setLoading(false));
-  }, []);
+  const fetch = () => getAllUsers().then(setUsers).catch(console.error).finally(() => setLoading(false));
+  useEffect(() => { fetch(); }, []);
 
   const handleDelete = async (id) => {
-    try {
-      await deleteUser(id);
-      setUsers((prev) => prev.filter((u) => u.id !== id));
-      toast.success("User deleted");
-    } catch { toast.error("Failed to delete user"); }
+    try { await deleteUser(id); setUsers((p) => p.filter((u) => u.id !== id)); toast.success("User deleted"); }
+    catch { toast.error("Failed to delete user"); }
     finally { setConfirmId(null); }
+  };
+
+  const handleToggle = async (id) => {
+    try { await toggleUserActive(id); toast.success("Status updated"); fetch(); }
+    catch { toast.error("Failed"); }
+  };
+
+  const handleRoleChange = async () => {
+    setSaving(true);
+    try { await changeUserRole(roleModal, newRole); toast.success("Role updated"); setRoleModal(null); fetch(); }
+    catch { toast.error("Failed to change role"); }
+    finally { setSaving(false); }
+  };
+
+  const handlePasswordReset = async () => {
+    if (newPassword.length < 6) return toast.error("Password must be at least 6 characters");
+    setSaving(true);
+    try { await resetUserPassword(passwordModal, newPassword); toast.success("Password reset"); setPasswordModal(null); setNewPassword(""); }
+    catch { toast.error("Failed to reset password"); }
+    finally { setSaving(false); }
   };
 
   const filtered = users.filter((u) =>
     u.email.toLowerCase().includes(search.toLowerCase()) ||
-    `${u.doctor?.firstName || u.patient?.firstName} ${u.doctor?.lastName || u.patient?.lastName}`.toLowerCase().includes(search.toLowerCase())
+    `${u.doctor?.firstName || u.patient?.firstName || ""} ${u.doctor?.lastName || u.patient?.lastName || ""}`.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -47,31 +68,22 @@ export default function AdminUsersPage() {
         </div>
         <div className="relative">
           <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-          <input type="text" placeholder="Search users..." value={search}
-            onChange={(e) => setSearch(e.target.value)} className="input-modern pl-10 w-64" />
+          <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)} className="input-modern pl-10 w-64" />
         </div>
       </div>
 
       <div className="card-modern p-0 overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              {["User", "Email", "Role", "Joined", "Actions"].map((h) => (
-                <th key={h} className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
-              ))}
-            </tr>
+            <tr>{["User", "Email", "Role", "Status", "Joined", "Actions"].map((h) => (
+              <th key={h} className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+            ))}</tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {loading ? (
-              [...Array(5)].map((_, i) => (
-                <tr key={i}><td colSpan={5} className="px-5 py-3"><Skeleton height={32} /></td></tr>
-              ))
-            ) : filtered.map((user) => {
-              const name = user.doctor
-                ? `Dr. ${user.doctor.firstName} ${user.doctor.lastName}`
-                : user.patient
-                ? `${user.patient.firstName} ${user.patient.lastName}`
-                : "—";
+            {loading ? [...Array(5)].map((_, i) => (
+              <tr key={i}><td colSpan={6} className="px-5 py-3"><Skeleton height={32} /></td></tr>
+            )) : filtered.map((user) => {
+              const name = user.doctor ? `Dr. ${user.doctor.firstName} ${user.doctor.lastName}` : user.patient ? `${user.patient.firstName} ${user.patient.lastName}` : "—";
               const badge = roleBadge[user.role];
               const Icon = badge.icon;
               return (
@@ -90,13 +102,32 @@ export default function AdminUsersPage() {
                       <Icon className="text-xs" /> {badge.label}
                     </span>
                   </td>
+                  <td className="px-5 py-3.5">
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${user.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
+                      {user.active ? "Active" : "Suspended"}
+                    </span>
+                  </td>
                   <td className="px-5 py-3.5 text-gray-400">{dayjs(user.createdAt).format("MMM D, YYYY")}</td>
                   <td className="px-5 py-3.5">
                     {user.role !== "ADMIN" && (
-                      <button onClick={() => setConfirmId(user.id)}
-                        className="p-2 rounded-lg border border-red-100 text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-                        <FaTrash className="text-xs" />
-                      </button>
+                      <div className="flex gap-1.5">
+                        <button onClick={() => handleToggle(user.id)} title={user.active ? "Suspend" : "Activate"}
+                          className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">
+                          {user.active ? <FaToggleOff className="text-sm" /> : <FaToggleOn className="text-sm text-green-500" />}
+                        </button>
+                        <button onClick={() => { setRoleModal(user.id); setNewRole(user.role); }} title="Change Role"
+                          className="p-2 rounded-lg border border-violet-100 text-violet-500 hover:bg-violet-50 transition-colors">
+                          <FaUserTag className="text-sm" />
+                        </button>
+                        <button onClick={() => setPasswordModal(user.id)} title="Reset Password"
+                          className="p-2 rounded-lg border border-amber-100 text-amber-500 hover:bg-amber-50 transition-colors">
+                          <FaKey className="text-sm" />
+                        </button>
+                        <button onClick={() => setConfirmId(user.id)}
+                          className="p-2 rounded-lg border border-red-100 text-red-400 hover:bg-red-50 transition-colors">
+                          <FaTrash className="text-xs" />
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -106,6 +137,39 @@ export default function AdminUsersPage() {
         </table>
       </div>
 
+      {/* Role change modal */}
+      {roleModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-fade-in">
+            <h3 className="font-bold text-gray-800 mb-4">Change User Role</h3>
+            <select className="input-modern mb-5" value={newRole} onChange={(e) => setNewRole(e.target.value)}>
+              <option value="PATIENT">Patient</option>
+              <option value="DOCTOR">Doctor</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+            <div className="flex gap-3">
+              <button onClick={handleRoleChange} disabled={saving} className="btn-modern-primary flex-1 py-2.5">{saving ? "Saving..." : "Update Role"}</button>
+              <button onClick={() => setRoleModal(null)} className="btn-modern-outline flex-1 py-2.5">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Password reset modal */}
+      {passwordModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-fade-in">
+            <h3 className="font-bold text-gray-800 mb-4">Reset Password</h3>
+            <input type="password" className="input-modern mb-5" placeholder="New password (min 6 chars)" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            <div className="flex gap-3">
+              <button onClick={handlePasswordReset} disabled={saving} className="btn-modern-primary flex-1 py-2.5">{saving ? "Saving..." : "Reset Password"}</button>
+              <button onClick={() => { setPasswordModal(null); setNewPassword(""); }} className="btn-modern-outline flex-1 py-2.5">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirm */}
       {confirmId && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-fade-in">

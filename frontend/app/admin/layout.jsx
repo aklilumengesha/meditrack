@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   FaHome, FaUsers, FaUserMd, FaUserInjured,
-  FaCalendarAlt, FaSignOutAlt, FaShieldAlt, FaBars, FaTimes,
+  FaCalendarAlt, FaSignOutAlt, FaShieldAlt, FaBars, FaTimes, FaNotesMedical,
 } from "react-icons/fa";
 
 const navItems = [
@@ -15,6 +15,7 @@ const navItems = [
   { href: "/admin/doctors", label: "Doctors", icon: FaUserMd },
   { href: "/admin/patients", label: "Patients", icon: FaUserInjured },
   { href: "/admin/appointments", label: "Appointments", icon: FaCalendarAlt },
+  { href: "/admin/medical-records", label: "Medical Records", icon: FaNotesMedical },
 ];
 
 export default function AdminLayout({ children }) {

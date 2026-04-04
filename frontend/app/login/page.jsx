@@ -50,9 +50,8 @@ export default function LoginPage() {
         </div>
 
         {/* Dashboard mockup */}
-        <div className="relative z-10 flex-1 flex items-center justify-center py-6">
-          <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-            style={{ transform: "perspective(1000px) rotateY(-4deg) rotateX(2deg)", transformOrigin: "center" }}>
+        <div className="relative z-10 flex-1 flex items-center justify-center py-4">
+          <div className="w-full" style={{ height: "420px", position: "relative" }}>
             <DashboardMockup />
           </div>
         </div>

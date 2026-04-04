@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const adminRoutes = ["/admin"];
 const doctorRoutes = ["/doctor"];
 const patientRoutes = ["/patient"];
-const publicRoutes = ["/login", "/register", "/landing", "/change-password"];
+const publicRoutes = ["/login", "/register", "/landing", "/change-password", "/forgot-password"];
 
 export function middleware(request) {
   const token = request.cookies.get("token")?.value;

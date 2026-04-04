@@ -4,29 +4,48 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 import {
   FaHome, FaUsers, FaUserMd, FaUserInjured,
-  FaCalendarAlt, FaSignOutAlt, FaShieldAlt, FaBars, FaTimes, FaNotesMedical,
+  FaCalendarAlt, FaSignOutAlt, FaShieldAlt, FaBars, FaTimes, FaNotesMedical, FaKey,
 } from "react-icons/fa";
-
-const navItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: FaHome },
-  { href: "/admin/users", label: "All Users", icon: FaUsers },
-  { href: "/admin/doctors", label: "Doctors", icon: FaUserMd },
-  { href: "/admin/patients", label: "Patients", icon: FaUserInjured },
-  { href: "/admin/appointments", label: "Appointments", icon: FaCalendarAlt },
-  { href: "/admin/medical-records", label: "Medical Records", icon: FaNotesMedical },
-];
 
 export default function AdminLayout({ children }) {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     if (!loading && (!user || user.role !== "ADMIN")) router.push("/login");
   }, [user, loading]);
+
+  useEffect(() => {
+    const fetchPending = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:3000/admin/password-reset-requests",
+          { headers: { Authorization: `Bearer ${token}` } });
+        setPendingCount(res.data.filter((r) => r.status === "PENDING").length);
+      } catch {}
+    };
+    if (user?.role === "ADMIN") {
+      fetchPending();
+      const interval = setInterval(fetchPending, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  const navItems = [
+    { href: "/admin/dashboard", label: "Dashboard", icon: FaHome },
+    { href: "/admin/users", label: "All Users", icon: FaUsers },
+    { href: "/admin/doctors", label: "Doctors", icon: FaUserMd },
+    { href: "/admin/patients", label: "Patients", icon: FaUserInjured },
+    { href: "/admin/appointments", label: "Appointments", icon: FaCalendarAlt },
+    { href: "/admin/medical-records", label: "Medical Records", icon: FaNotesMedical },
+    { href: "/admin/reset-requests", label: "Reset Requests", icon: FaKey, badge: pendingCount },
+  ];
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -54,7 +73,7 @@ export default function AdminLayout({ children }) {
         </div>
 
         <nav className="flex-1 p-3 space-y-1">
-          {navItems.map(({ href, label, icon: Icon }) => {
+          {navItems.map(({ href, label, icon: Icon, badge }) => {
             const active = pathname === href;
             return (
               <Link key={href} href={href} title={collapsed ? label : ""}
@@ -63,7 +82,17 @@ export default function AdminLayout({ children }) {
                 } ${collapsed ? "justify-center" : ""}`}
               >
                 <Icon className={`text-lg flex-shrink-0 ${active ? "text-white" : "text-slate-400"}`} />
-                {!collapsed && <span>{label}</span>}
+                {!collapsed && (
+                  <span className="flex-1 flex items-center justify-between">
+                    {label}
+                    {badge > 0 && (
+                      <span className="bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{badge}</span>
+                    )}
+                  </span>
+                )}
+                {collapsed && badge > 0 && (
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-white text-xs rounded-full flex items-center justify-center">{badge}</span>
+                )}
               </Link>
             );
           })}

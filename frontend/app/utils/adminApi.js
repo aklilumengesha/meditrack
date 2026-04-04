@@ -12,7 +12,7 @@ export const getAllUsers = async () => (await axios.get(`${BASE_URL}/admin/users
 export const deleteUser = async (id) => (await axios.delete(`${BASE_URL}/admin/users/${id}`, authHeaders())).data;
 export const toggleUserActive = async (id) => (await axios.patch(`${BASE_URL}/admin/users/${id}/toggle-active`, {}, authHeaders())).data;
 export const changeUserRole = async (id, role) => (await axios.patch(`${BASE_URL}/admin/users/${id}/role`, { role }, authHeaders())).data;
-export const resetUserPassword = async (id, password) => (await axios.patch(`${BASE_URL}/admin/users/${id}/reset-password`, { password }, authHeaders())).data;
+export const resetUserPassword = async (id) => (await axios.patch(`${BASE_URL}/admin/users/${id}/reset-password`, {}, authHeaders())).data;
 
 // Doctors
 export const getAdminDoctors = async () => (await axios.get(`${BASE_URL}/admin/doctors`, authHeaders())).data;

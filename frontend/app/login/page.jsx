@@ -20,7 +20,16 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await axios.post(`${BASE_URL}/auth/login`, form);
-      login(res.data.access_token, res.data.role);
+      if (res.data.mustChangePassword) {
+        // Store token temporarily for the change-password page
+        localStorage.setItem("token", res.data.access_token);
+        localStorage.setItem("role", res.data.role);
+        document.cookie = `token=${res.data.access_token}; path=/`;
+        document.cookie = `role=${res.data.role}; path=/`;
+        window.location.href = "/change-password";
+      } else {
+        login(res.data.access_token, res.data.role);
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Invalid credentials");
     } finally {

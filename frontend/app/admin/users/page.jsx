@@ -23,6 +23,7 @@ export default function AdminUsersPage() {
   const [passwordModal, setPasswordModal] = useState(null);
   const [newRole, setNewRole] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [tempPassword, setTempPassword] = useState("");
   const [saving, setSaving] = useState(false);
 
   const fetch = () => getAllUsers().then(setUsers).catch(console.error).finally(() => setLoading(false));
@@ -47,10 +48,12 @@ export default function AdminUsersPage() {
   };
 
   const handlePasswordReset = async () => {
-    if (newPassword.length < 6) return toast.error("Password must be at least 6 characters");
     setSaving(true);
-    try { await resetUserPassword(passwordModal, newPassword); toast.success("Password reset"); setPasswordModal(null); setNewPassword(""); }
-    catch { toast.error("Failed to reset password"); }
+    try {
+      const res = await resetUserPassword(passwordModal);
+      setTempPassword(res.tempPassword);
+      toast.success("Password reset — share the temp password with the user");
+    } catch { toast.error("Failed to reset password"); }
     finally { setSaving(false); }
   };
 
@@ -159,12 +162,28 @@ export default function AdminUsersPage() {
       {passwordModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-fade-in">
-            <h3 className="font-bold text-gray-800 mb-4">Reset Password</h3>
-            <input type="password" className="input-modern mb-5" placeholder="New password (min 6 chars)" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-            <div className="flex gap-3">
-              <button onClick={handlePasswordReset} disabled={saving} className="btn-modern-primary flex-1 py-2.5">{saving ? "Saving..." : "Reset Password"}</button>
-              <button onClick={() => { setPasswordModal(null); setNewPassword(""); }} className="btn-modern-outline flex-1 py-2.5">Cancel</button>
-            </div>
+            <h3 className="font-bold text-gray-800 mb-2">Reset Password</h3>
+            {!tempPassword ? (
+              <>
+                <p className="text-gray-500 text-sm mb-5">
+                  A secure temporary password will be generated automatically. The user will be required to change it on next login.
+                </p>
+                <div className="flex gap-3">
+                  <button onClick={handlePasswordReset} disabled={saving} className="btn-modern-primary flex-1 py-2.5">{saving ? "Generating..." : "Generate Temp Password"}</button>
+                  <button onClick={() => { setPasswordModal(null); setTempPassword(""); }} className="btn-modern-outline flex-1 py-2.5">Cancel</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-gray-500 text-sm mb-3">Share this temporary password with the user. They will be forced to change it on next login.</p>
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-5 flex items-center justify-between">
+                  <code className="text-amber-800 font-bold text-lg tracking-widest">{tempPassword}</code>
+                  <button onClick={() => { navigator.clipboard.writeText(tempPassword); toast.success("Copied!"); }}
+                    className="text-xs text-amber-600 font-semibold hover:underline ml-3">Copy</button>
+                </div>
+                <button onClick={() => { setPasswordModal(null); setTempPassword(""); setNewPassword(""); }} className="btn-modern-primary w-full py-2.5">Done</button>
+              </>
+            )}
           </div>
         </div>
       )}

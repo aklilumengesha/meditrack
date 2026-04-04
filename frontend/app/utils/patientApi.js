@@ -40,3 +40,21 @@ export const getPatientMedicalRecords = async () => {
   const res = await axios.get(`${BASE_URL}/patient-portal/medical-records`, authHeaders());
   return res.data;
 };
+
+export const rateDoctor = async (appointmentId, rating, comment) => {
+  const res = await axios.post(
+    `${BASE_URL}/ratings/appointments/${appointmentId}`,
+    { rating, comment },
+    authHeaders()
+  );
+  return res.data;
+};
+
+export const updateAppointmentStatus = async (id, status) => {
+  const res = await axios.put(
+    `${BASE_URL}/appointments/${id}/status`,
+    { status },
+    authHeaders()
+  );
+  return res.data;
+};

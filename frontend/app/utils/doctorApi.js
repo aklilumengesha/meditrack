@@ -36,3 +36,22 @@ export const getAllDoctors = async (specialty = '') => {
   const res = await axios.get(`${BASE_URL}/doctors`, { ...authHeaders(), ...params });
   return res.data;
 };
+
+export const updateAppointmentStatus = async (id, status) => {
+  const res = await axios.put(
+    `${BASE_URL}/appointments/${id}/status`,
+    { status },
+    authHeaders()
+  );
+  return res.data;
+};
+
+export const getDoctorById = async (id) => {
+  const res = await axios.get(`${BASE_URL}/doctors/${id}`, authHeaders());
+  return res.data;
+};
+
+export const getDoctorRatings = async (doctorId) => {
+  const res = await axios.get(`${BASE_URL}/ratings/doctors/${doctorId}`, authHeaders());
+  return res.data;
+};

@@ -79,7 +79,6 @@ export default function AdminUsersPage() {
           <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)} className="input-modern pl-10 w-64" />
           </div>
         </div>
-        </div>
       </div>
 
       <div className="card-modern p-0 overflow-hidden">

@@ -20,6 +20,7 @@ const validationSchema = Yup.object({
     'Medication', 'Surgery', 'Therapy', 'LifestyleChange', 'FollowUp', 'Counseling', 'Rehabilitation', 'Other'
   ]).required('Treatment is required'),
   medication: Yup.mixed().oneOf([
+    '', null, undefined,
     'Antibiotics', 'Painkillers', 'Insulin', 'Inhalers', 'Antihypertensives', 'Antivirals', 'Corticosteroids', 'Other'
   ]).nullable(),
   visitType: Yup.mixed().oneOf([
@@ -37,32 +38,31 @@ const AddMedicalRecord = ({ patientId, onClose, onRecordAdded }) => {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      
-      console.log("Form Values: ", values);
-
       if (values.date) {
-        values.date = dayjs(values.date).format('YYYY-MM-DD'); 
-        console.log("Formatted Date Value: ", values.date);
-      } else {
-        console.error("Date is undefined");
+        values.date = dayjs(values.date).format('YYYY-MM-DD');
       }
+      // clean empty optional fields
+      if (!values.medication) values.medication = undefined;
+      if (!values.bloodPressure) values.bloodPressure = undefined;
+      if (!values.heartRate) values.heartRate = undefined;
+      if (!values.temperature) values.temperature = undefined;
+      if (!values.weight) values.weight = undefined;
+      if (!values.height) values.height = undefined;
 
       values.patientId = patientId || '';
-  
+
       await createMedicalRecord(values);
       toast.success('Medical record created successfully!');
-      resetForm(); 
-
-      if (onClose) {
-        onClose();
-      }
+      resetForm();
 
       if (onRecordAdded) {
         onRecordAdded();
+        return; // don't navigate when used inside a modal
       }
 
-      console.log("Redirecting to: ", `/medical-reports/${patientId}`);
-      router.push(`/medical-reports/${patientId}`); 
+      if (onClose) onClose();
+
+      router.push(`/medical-reports/${patientId}`);
     } catch (error) {
       console.error("Error creating medical record: ", error);
       toast.error('Failed to create medical record: ' + error.message);

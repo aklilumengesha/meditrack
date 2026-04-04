@@ -140,15 +140,10 @@ export class MedicalRecordService {
 
   async findByPatientId(patientId: number): Promise<MedicalRecord []> {
     try {
-      const records = await this.prisma.medicalRecord.findMany({
+      return await this.prisma.medicalRecord.findMany({
         where: { patientId },
+        orderBy: { date: 'desc' },
       });
-
-      if (!records.length) {
-        throw new NotFoundException('No medical records found for this patient');
-      }
-
-      return records;
     } catch (error) {
       throw new BadRequestException(error.message);
     }

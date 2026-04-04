@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Link from "next/link";
-import { FaEnvelope, FaLock, FaHeartbeat, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaHeartbeat, FaEye, FaEyeSlash, FaSignInAlt } from "react-icons/fa";
 import DashboardMockup from "../components/shared/DashboardMockup";
 
 const BASE_URL = "http://localhost:3000";
@@ -73,7 +73,7 @@ export default function LoginPage() {
               <FaHeartbeat className="text-blue-600 text-2xl" />
               <span className="text-xl font-extrabold text-gray-900">Meditrack</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Welcome back</h1>
+            <h1 className="text-3xl font-extrabold text-gray-900">Welcome back to <span className="gradient-text">Meditrack</span></h1>
             <p className="text-gray-500 mt-2">Sign in to your account to continue</p>
           </div>
 
@@ -126,13 +126,17 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-modern-primary w-full py-3 text-base mt-2"
+              className="btn-modern-primary w-full py-3 text-base mt-2 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="loading loading-spinner loading-sm"></span> Signing in...
                 </span>
-              ) : "Sign In"}
+              ) : (
+                <>
+                  <FaSignInAlt className="text-sm" /> Sign In to Meditrack
+                </>
+              )}
             </button>
           </form>
 

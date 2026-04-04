@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Link from "next/link";
-import { FaHeartbeat, FaUserMd, FaUserInjured, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaHeartbeat, FaUserMd, FaUserInjured, FaEye, FaEyeSlash, FaUserPlus } from "react-icons/fa";
 import DashboardMockup from "../components/shared/DashboardMockup";
 import { useSearchParams } from "next/navigation";
 
@@ -74,7 +74,7 @@ function RegisterForm() {
               <FaHeartbeat className="text-blue-600 text-2xl" />
               <span className="text-xl font-extrabold text-gray-900">Meditrack</span>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Create account</h1>
+            <h1 className="text-3xl font-extrabold text-gray-900">Create your <span className="gradient-text">Meditrack</span> account</h1>
             <p className="text-gray-500 mt-2">Choose your role to get started</p>
           </div>
 
@@ -161,12 +161,14 @@ function RegisterForm() {
               </>
             )}
 
-            <button type="submit" disabled={loading} className="btn-modern-primary w-full py-3 text-base mt-2">
+            <button type="submit" disabled={loading} className="btn-modern-primary w-full py-3 text-base mt-2 flex items-center justify-center gap-2">
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="loading loading-spinner loading-sm"></span> Creating account...
                 </span>
-              ) : "Create Account"}
+              ) : (
+                <><FaUserPlus className="text-sm" /> Create Meditrack Account</>
+              )}
             </button>
           </form>
 

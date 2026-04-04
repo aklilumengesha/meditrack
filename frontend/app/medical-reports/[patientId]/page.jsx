@@ -131,8 +131,10 @@ export default function MedicalReportsPage() {
           <div className="space-y-3">
             {filtered.map((record) => (
               <div key={record.id} className="card-modern p-0 overflow-hidden">
-                <button className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors text-left"
-                  onClick={() => setExpanded(expanded === record.id ? null : record.id)}>
+                <div
+                  className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors text-left cursor-pointer"
+                  onClick={() => setExpanded(expanded === record.id ? null : record.id)}
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-11 h-11 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
                       <FaStethoscope />
@@ -152,7 +154,7 @@ export default function MedicalReportsPage() {
                     </button>
                     {expanded === record.id ? <FaChevronUp className="text-gray-400" /> : <FaChevronDown className="text-gray-400" />}
                   </div>
-                </button>
+                </div>
 
                 {expanded === record.id && (
                   <div className="border-t border-gray-100 p-5 grid grid-cols-2 sm:grid-cols-3 gap-3 animate-fade-in">

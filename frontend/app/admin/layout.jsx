@@ -25,7 +25,7 @@ export default function AdminLayout({ children }) {
     const fetchPending = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:3000/admin/password-reset-requests",
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/admin/password-reset-requests`,
           { headers: { Authorization: `Bearer ${token}` } });
         setPendingCount(res.data.filter((r) => r.status === "PENDING").length);
       } catch {}

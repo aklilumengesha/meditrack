@@ -8,7 +8,7 @@ import { FaHeartbeat, FaUserMd, FaUserInjured, FaEye, FaEyeSlash, FaUserPlus } f
 import DashboardMockup from "../components/shared/DashboardMockup";
 import { useSearchParams } from "next/navigation";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 function RegisterForm() {
   const { login } = useAuth();
@@ -189,3 +189,4 @@ export default function RegisterPage() {
     </Suspense>
   );
 }
+

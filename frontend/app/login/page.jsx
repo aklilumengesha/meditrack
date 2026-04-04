@@ -7,7 +7,7 @@ import Link from "next/link";
 import { FaEnvelope, FaLock, FaHeartbeat, FaEye, FaEyeSlash, FaSignInAlt } from "react-icons/fa";
 import DashboardMockup from "../components/shared/DashboardMockup";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -151,3 +151,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

@@ -5,7 +5,7 @@ import axios from "axios";
 import { FaLock, FaHeartbeat, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function ChangePasswordPage() {
   const { login } = useAuth();
@@ -123,3 +123,4 @@ export default function ChangePasswordPage() {
     </div>
   );
 }
+

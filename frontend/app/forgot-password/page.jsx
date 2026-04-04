@@ -5,7 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { FaEnvelope, FaHeartbeat, FaCheckCircle } from "react-icons/fa";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -103,3 +103,4 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
+

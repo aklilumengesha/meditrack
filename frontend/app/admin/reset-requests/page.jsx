@@ -11,7 +11,7 @@ import Skeleton from "react-loading-skeleton";
 
 dayjs.extend(relativeTime);
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
 export default function ResetRequestsPage() {
@@ -149,3 +149,4 @@ export default function ResetRequestsPage() {
     </div>
   );
 }
+

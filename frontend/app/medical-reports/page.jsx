@@ -1,12 +1,10 @@
-import React from 'react';
-import Header from '../components/Header';
+"use client";
 
-const page = () => {
-  return (
-    <>
-        <Header />
-    </>
-  )
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+export default function MedicalReportsIndex() {
+  const router = useRouter();
+  useEffect(() => { router.push("/"); }, []);
+  return null;
 }
-
-export default page

@@ -44,6 +44,7 @@ model Doctor {
   user         User          @relation(fields: [userId], references: [id])
   userId       Int           @unique
   appointments Appointment[]
+  ratings      DoctorRating[]
 }
 
 // Modele pour les patients
@@ -57,6 +58,7 @@ model Patient {
   userId            Int?          @unique
   appointments      Appointment[]
   medicalRecords    MedicalRecord[]
+  ratings           DoctorRating[]
 }
 
 // Modele pour les rendez-vous
@@ -65,10 +67,19 @@ model Appointment {
   date             DateTime
   startTime        DateTime
   reason           String?
+  status           AppointmentStatus @default(PENDING)
   patient          Patient   @relation(fields: [patientId], references: [id])
   patientId        Int
   doctor           Doctor    @relation(fields: [doctorId], references: [id])
   doctorId         Int
+  rating           DoctorRating?
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
 }
 
 // Password reset requests
@@ -85,6 +96,20 @@ model PasswordResetRequest {
 enum ResetRequestStatus {
   PENDING
   RESOLVED
+}
+
+// Doctor ratings
+model DoctorRating {
+  id        Int      @id @default(autoincrement())
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  Int
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId Int
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int @unique
 }
 
 // Notifications

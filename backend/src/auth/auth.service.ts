@@ -49,6 +49,23 @@ export class AuthService {
     return this.signToken(user.id, user.email, user.role, user.mustChangePassword);
   }
 
+  async forgotPassword(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error('No account found with this email');
+
+    // Check if there's already a pending request
+    const existing = await this.prisma.passwordResetRequest.findFirst({
+      where: { userId: user.id, status: 'PENDING' },
+    });
+    if (existing) return { message: 'A reset request is already pending. Please contact the administrator.' };
+
+    await this.prisma.passwordResetRequest.create({
+      data: { email, userId: user.id },
+    });
+
+    return { message: 'Your request has been submitted. The administrator will reset your password shortly.' };
+  }
+
   async changePassword(userId: number, newPassword: string) {
     const hashed = await bcrypt.hash(newPassword, 10);
     return this.prisma.user.update({

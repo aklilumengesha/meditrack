@@ -65,21 +65,16 @@ export class AppointmentService {
 
   // Function to update an existing appointment
   async update(id: number, data: UpdateAppointmentDto): Promise<Appointment> {
-    this.validateTimeRange(data.startTime);
+    if (data.startTime) this.validateTimeRange(data.startTime);
 
     try {
-      const existingAppointment = await this.prisma.appointment.findUnique({
-        where:{id},
-      });
-
-      if(!existingAppointment) {
-        throw new NotFoundException(`Appointment with ID ${id} not found`);
-      }
+      const existingAppointment = await this.prisma.appointment.findUnique({ where: { id } });
+      if (!existingAppointment) throw new NotFoundException(`Appointment with ID ${id} not found`);
 
       const { date, startTime, doctorId, reason, patientId } = data;
 
       return await this.prisma.appointment.update({
-        where:{id},
+        where: { id },
         data: {
           date: date ? new Date(date) : undefined,
           startTime: startTime ? new Date(startTime) : undefined,
@@ -88,7 +83,6 @@ export class AppointmentService {
           doctor: doctorId ? { connect: { id: doctorId } } : undefined,
         },
       });
-
     } catch (error) {
       throw new Error(`Failed to update appointment with ID ${id}: ${error.message}`);
     }

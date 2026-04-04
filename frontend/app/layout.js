@@ -10,9 +10,6 @@ const poppins = Poppins({
 export const metadata = {
   title: "Meditrack",
   description: "Healthcare Management System",
-  icons: {
-    icon: "/favicon.svg",
-  },
 };
 
 export default function RootLayout({ children }) {

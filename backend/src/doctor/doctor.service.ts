@@ -7,10 +7,20 @@ export class DoctorService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.doctor.findMany({
-      include: { user: { select: { email: true } } },
+    const doctors = await this.prisma.doctor.findMany({
+      include: {
+        user: { select: { email: true } },
+        ratings: { select: { rating: true } },
+      },
       orderBy: { lastName: 'asc' },
     });
+    return doctors.map((d) => ({
+      ...d,
+      averageRating: d.ratings.length > 0
+        ? parseFloat((d.ratings.reduce((s, r) => s + r.rating, 0) / d.ratings.length).toFixed(1))
+        : 0,
+      totalRatings: d.ratings.length,
+    }));
   }
 
   async findBySpecialty(specialty: string) {
@@ -30,10 +40,20 @@ export class DoctorService {
           include: { patient: true },
           orderBy: { date: 'asc' },
         },
+        ratings: {
+          include: { patient: { select: { firstName: true, lastName: true } } },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
       },
     });
     if (!doctor) throw new NotFoundException(`Doctor with ID ${id} not found`);
-    return doctor;
+
+    const avgRating = doctor.ratings.length > 0
+      ? doctor.ratings.reduce((s, r) => s + r.rating, 0) / doctor.ratings.length
+      : 0;
+
+    return { ...doctor, averageRating: parseFloat(avgRating.toFixed(1)), totalRatings: doctor.ratings.length };
   }
 
   async findByUserId(userId: number) {

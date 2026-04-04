@@ -27,10 +27,10 @@ const validationSchema = Yup.object({
     'RoutineCheckUp', 'Consultation', 'BloodTest', 'Vaccination', 'Emergency', 'Specialist'
   ]).required('Visit type is required'),
   notes: Yup.string().required('Notes are required'),
-  heartRate: Yup.number().nullable().min(40, 'Heart rate must be at least 40').max(200, 'Heart rate must be less than 200'),
-  temperature: Yup.number().nullable().min(35, 'Temperature must be at least 35°C').max(42, 'Temperature must be less than 42°C'),
-  weight: Yup.number().positive('Weight must be a positive number').nullable(),
-  height: Yup.number().positive('Height must be a positive number').nullable(),
+  heartRate: Yup.number().nullable().positive('Heart rate must be positive').transform((v, o) => o === '' ? null : v),
+  temperature: Yup.number().nullable().positive('Temperature must be positive').transform((v, o) => o === '' ? null : v),
+  weight: Yup.number().nullable().positive('Weight must be a positive number').transform((v, o) => o === '' ? null : v),
+  height: Yup.number().nullable().positive('Height must be a positive number').transform((v, o) => o === '' ? null : v),
 });
 
 const AddMedicalRecord = ({ patientId, onClose, onRecordAdded }) => {

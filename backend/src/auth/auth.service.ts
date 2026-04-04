@@ -61,6 +61,8 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.password);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
 
+    if (!user.active) throw new UnauthorizedException('Your account has been suspended. Please contact the administrator.');
+
     return this.signToken(user.id, user.email, user.role);
   }
 

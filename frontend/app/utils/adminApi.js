@@ -37,3 +37,16 @@ export const deleteAdminMedicalRecord = async (id) => (await axios.delete(`${BAS
 
 // Settings
 export const getSpecialties = async () => (await axios.get(`${BASE_URL}/admin/specialties`, authHeaders())).data;
+
+// CSV Export helpers
+export const exportToCSV = (data, filename) => {
+  if (!data.length) return;
+  const headers = Object.keys(data[0]);
+  const rows = data.map((row) => headers.map((h) => `"${String(row[h] ?? "").replace(/"/g, '""')}"`).join(","));
+  const csv = [headers.join(","), ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `${filename}.csv`; a.click();
+  URL.revokeObjectURL(url);
+};

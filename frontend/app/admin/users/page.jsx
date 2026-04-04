@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllUsers, deleteUser, toggleUserActive, changeUserRole, resetUserPassword } from "../../utils/adminApi";
-import { FaTrash, FaSearch, FaUserMd, FaUserInjured, FaShieldAlt, FaToggleOn, FaToggleOff, FaKey, FaUserTag } from "react-icons/fa";
+import { getAllUsers, deleteUser, toggleUserActive, changeUserRole, resetUserPassword, exportToCSV } from "../../utils/adminApi";
+import { FaTrash, FaSearch, FaUserMd, FaUserInjured, FaShieldAlt, FaToggleOn, FaToggleOff, FaKey, FaUserTag, FaDownload } from "react-icons/fa";
 import dayjs from "dayjs";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -69,9 +69,16 @@ export default function AdminUsersPage() {
           <h1 className="page-title">All Users</h1>
           <p className="text-gray-500 mt-1">{users.length} registered users</p>
         </div>
-        <div className="relative">
+        <div className="flex gap-3">
+          <button onClick={() => exportToCSV(users.map(u => ({ name: u.doctor ? `Dr. ${u.doctor.firstName} ${u.doctor.lastName}` : u.patient ? `${u.patient.firstName} ${u.patient.lastName}` : "—", email: u.email, role: u.role, status: u.active ? "Active" : "Suspended", joined: dayjs(u.createdAt).format("MMM D, YYYY") })), "users")}
+            className="btn-modern-outline flex items-center gap-2 text-sm">
+            <FaDownload className="text-xs" /> Export CSV
+          </button>
+          <div className="relative">
           <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
           <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)} className="input-modern pl-10 w-64" />
+          </div>
+        </div>
         </div>
       </div>
 

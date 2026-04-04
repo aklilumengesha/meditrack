@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoreModule } from './core/core.module';
@@ -10,13 +12,13 @@ import { AuthModule } from './auth/auth.module';
 import { DoctorModule } from './doctor/doctor.module';
 import { PatientPortalModule } from './patient-portal/patient-portal.module';
 import { NotificationModule } from './notification/notification.module';
-
 import { AdminModule } from './admin/admin.module';
 import { RatingModule } from './rating/rating.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 20 }]),
     CoreModule,
     AuthModule,
     DoctorModule,
@@ -29,6 +31,9 @@ import { RatingModule } from './rating/rating.module';
     MedicalRecordModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
 })
 export class AppModule {}

@@ -170,7 +170,12 @@ export class AppointmentService {
     }
   }
 
-  // Function to reschedule an appointment
+  // Function to update appointment status (doctor confirms/completes)
+  async updateStatus(id: number, status: string): Promise<Appointment> {
+    const appt = await this.prisma.appointment.findUnique({ where: { id } });
+    if (!appt) throw new NotFoundException(`Appointment with ID ${id} not found`);
+    return this.prisma.appointment.update({ where: { id }, data: { status: status as any } });
+  }
   async reschedule(id: number, newDate: Date, newStartTime: Date): Promise<Appointment> {
       this.validateTimeRange(newStartTime);
       

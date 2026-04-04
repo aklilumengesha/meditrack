@@ -87,4 +87,11 @@ export class AppointmentController {
     return this.appointmentService.reschedule(id, newDate, newStartTime);
   }
 
+  @Put(':id/status')
+  async updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: { status: string }
+  ) {
+    return this.appointmentService.updateStatus(id, body.status);
+  }
 }

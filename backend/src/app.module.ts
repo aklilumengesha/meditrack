@@ -12,6 +12,7 @@ import { PatientPortalModule } from './patient-portal/patient-portal.module';
 import { NotificationModule } from './notification/notification.module';
 
 import { AdminModule } from './admin/admin.module';
+import { RatingModule } from './rating/rating.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AdminModule } from './admin/admin.module';
     PatientPortalModule,
     NotificationModule,
     AdminModule,
+    RatingModule,
     AppointmentModule,
     MedicalRecordModule,
   ],

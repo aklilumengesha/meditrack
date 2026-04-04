@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getMyAppointments } from "../../utils/doctorApi";
+import { getMyAppointments, updateAppointmentStatus } from "../../utils/doctorApi";
 import { deleteAppointment, rescheduleAppointment } from "../../utils/api";
 import dayjs from "dayjs";
 import { FaCalendarAlt, FaClock, FaTrash, FaEdit, FaTimes, FaCheck } from "react-icons/fa";
@@ -11,6 +11,13 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Skeleton from "react-loading-skeleton";
+
+const statusConfig = {
+  PENDING:   { label: "Pending",   cls: "bg-amber-100 text-amber-700" },
+  CONFIRMED: { label: "Confirmed", cls: "bg-blue-100 text-blue-700" },
+  COMPLETED: { label: "Completed", cls: "bg-green-100 text-green-700" },
+  CANCELLED: { label: "Cancelled", cls: "bg-red-100 text-red-600" },
+};
 
 export default function DoctorAppointmentsPage() {
   const [appointments, setAppointments] = useState([]);
@@ -44,6 +51,11 @@ export default function DoctorAppointmentsPage() {
     } catch { toast.error("Failed to reschedule"); }
   };
 
+  const handleStatus = async (id, status) => {
+    try { await updateAppointmentStatus(id, status); toast.success(`Marked as ${status.toLowerCase()}`); fetchAppointments(); }
+    catch { toast.error("Failed to update status"); }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -58,8 +70,7 @@ export default function DoctorAppointmentsPage() {
           <button key={f} onClick={() => setFilter(f)}
             className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${
               filter === f ? "bg-blue-600 text-white shadow-sm" : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
-            }`}
-          >
+            }`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
@@ -74,34 +85,52 @@ export default function DoctorAppointmentsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map((appt) => (
-            <div key={appt.id} className="card-modern flex items-center justify-between p-5">
-              <div className="flex items-center gap-4">
-                <div className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm ${filter === "upcoming" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"}`}>
-                  {appt.patient?.firstName?.[0]}{appt.patient?.lastName?.[0]}
+          {filtered.map((appt) => {
+            const sc = statusConfig[appt.status] || statusConfig.PENDING;
+            return (
+              <div key={appt.id} className="card-modern flex items-center justify-between p-5">
+                <div className="flex items-center gap-4">
+                  <div className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm ${filter === "upcoming" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"}`}>
+                    {appt.patient?.firstName?.[0]}{appt.patient?.lastName?.[0]}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800">{appt.patient?.firstName} {appt.patient?.lastName}</p>
+                    <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                      <FaClock className="inline" /> {dayjs(appt.date).format("MMM D, YYYY")} at {dayjs(appt.startTime).format("HH:mm")}
+                    </p>
+                    {appt.reason && <p className="text-xs text-gray-300 mt-0.5">{appt.reason}</p>}
+                  </div>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-800">{appt.patient?.firstName} {appt.patient?.lastName}</p>
-                  <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                    <FaClock className="inline" /> {dayjs(appt.date).format("MMM D, YYYY")} at {dayjs(appt.startTime).format("HH:mm")}
-                  </p>
-                  {appt.reason && <p className="text-xs text-gray-300 mt-0.5">{appt.reason}</p>}
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${sc.cls}`}>{sc.label}</span>
+                  {filter === "upcoming" && appt.status === "PENDING" && (
+                    <button onClick={() => handleStatus(appt.id, "CONFIRMED")}
+                      className="p-2 rounded-xl border border-blue-100 text-blue-500 hover:bg-blue-50 transition-colors" title="Confirm">
+                      <FaCheck className="text-sm" />
+                    </button>
+                  )}
+                  {filter === "upcoming" && appt.status === "CONFIRMED" && (
+                    <button onClick={() => handleStatus(appt.id, "COMPLETED")}
+                      className="p-2 rounded-xl border border-green-100 text-green-500 hover:bg-green-50 transition-colors" title="Mark Complete">
+                      <FaCheck className="text-sm" />
+                    </button>
+                  )}
+                  {filter === "upcoming" && appt.status !== "CANCELLED" && appt.status !== "COMPLETED" && (
+                    <>
+                      <button onClick={() => setSelected(appt)}
+                        className="p-2 rounded-xl border border-blue-100 text-blue-400 hover:bg-blue-50 transition-colors">
+                        <FaEdit className="text-sm" />
+                      </button>
+                      <button onClick={() => handleStatus(appt.id, "CANCELLED")}
+                        className="p-2 rounded-xl border border-red-100 text-red-400 hover:bg-red-50 transition-colors">
+                        <FaTimes className="text-sm" />
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
-              {filter === "upcoming" && (
-                <div className="flex gap-2">
-                  <button onClick={() => setSelected(appt)}
-                    className="p-2.5 rounded-xl border border-blue-100 text-blue-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <FaEdit className="text-sm" />
-                  </button>
-                  <button onClick={() => handleDelete(appt.id)}
-                    className="p-2.5 rounded-xl border border-red-100 text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
-                    <FaTrash className="text-sm" />
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -110,9 +139,7 @@ export default function DoctorAppointmentsPage() {
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl animate-fade-in">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold text-gray-800">Reschedule Appointment</h3>
-              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
-                <FaTimes />
-              </button>
+              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600"><FaTimes /></button>
             </div>
             <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl mb-5">
               <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">

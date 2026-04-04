@@ -18,36 +18,19 @@ export class AuthService {
     if (existing) throw new ConflictException('Email already in use');
 
     const hashed = await bcrypt.hash(dto.password, 10);
-
     const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        password: hashed,
-        role: dto.role,
-      },
+      data: { email: dto.email, password: hashed, role: dto.role },
     });
 
     if (dto.role === Role.DOCTOR) {
       await this.prisma.doctor.create({
-        data: {
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-          specialty: dto.specialty || 'General',
-          phone: dto.phone,
-          userId: user.id,
-        },
+        data: { firstName: dto.firstName, lastName: dto.lastName, specialty: dto.specialty || 'General', phone: dto.phone, userId: user.id },
       });
     }
 
     if (dto.role === Role.PATIENT) {
       await this.prisma.patient.create({
-        data: {
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-          birthDate: dto.birthDate ? new Date(dto.birthDate) : new Date(),
-          address: dto.address,
-          userId: user.id,
-        },
+        data: { firstName: dto.firstName, lastName: dto.lastName, birthDate: dto.birthDate ? new Date(dto.birthDate) : new Date(), address: dto.address, userId: user.id },
       });
     }
 
@@ -64,6 +47,14 @@ export class AuthService {
     if (!user.active) throw new UnauthorizedException('Your account has been suspended. Please contact the administrator.');
 
     return this.signToken(user.id, user.email, user.role, user.mustChangePassword);
+  }
+
+  async changePassword(userId: number, newPassword: string) {
+    const hashed = await bcrypt.hash(newPassword, 10);
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashed, mustChangePassword: false },
+    });
   }
 
   private signToken(userId: number, email: string, role: string, mustChangePassword = false) {

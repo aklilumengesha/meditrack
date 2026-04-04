@@ -16,4 +16,12 @@ export class UpdateDoctorDto {
   @IsString()
   @IsOptional()
   phone?: string;
+
+  @IsString()
+  @IsOptional()
+  photoUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  bio?: string;
 }

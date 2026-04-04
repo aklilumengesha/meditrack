@@ -70,7 +70,6 @@ export class DoctorService {
     if (!doctor) throw new NotFoundException(`Doctor with ID ${id} not found`);
     return this.prisma.doctor.update({ where: { id }, data: dto });
   }
-
   async getDashboardStats(doctorId: number) {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());

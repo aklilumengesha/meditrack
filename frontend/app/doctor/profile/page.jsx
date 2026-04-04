@@ -9,7 +9,7 @@ import Skeleton from "react-loading-skeleton";
 
 export default function DoctorProfilePage() {
   const [profile, setProfile] = useState(null);
-  const [form, setForm] = useState({ firstName: "", lastName: "", specialty: "", phone: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", specialty: "", phone: "", photoUrl: "", bio: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -17,7 +17,7 @@ export default function DoctorProfilePage() {
   useEffect(() => {
     getMyProfile().then((data) => {
       setProfile(data);
-      setForm({ firstName: data.firstName, lastName: data.lastName, specialty: data.specialty, phone: data.phone || "" });
+      setForm({ firstName: data.firstName, lastName: data.lastName, specialty: data.specialty, phone: data.phone || "", photoUrl: data.photoUrl || "", bio: data.bio || "" });
     }).catch(console.error).finally(() => setLoading(false));
   }, []);
 
@@ -47,8 +47,14 @@ export default function DoctorProfilePage() {
         {loading ? <Skeleton count={5} height={48} className="mb-3" /> : (
           <>
             <div className="flex items-center gap-5 pb-6 mb-6 border-b border-gray-100">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-800 text-white rounded-2xl flex items-center justify-center text-3xl font-extrabold shadow-sm">
-                {profile?.firstName?.[0]}{profile?.lastName?.[0]}
+              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-sm flex-shrink-0">
+                {profile?.photoUrl ? (
+                  <img src={profile.photoUrl} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-800 text-white flex items-center justify-center text-3xl font-extrabold">
+                    {profile?.firstName?.[0]}{profile?.lastName?.[0]}
+                  </div>
+                )}
               </div>
               <div>
                 <p className="text-xl font-extrabold text-gray-900">Dr. {profile?.firstName} {profile?.lastName}</p>
@@ -76,6 +82,14 @@ export default function DoctorProfilePage() {
                 <div>
                   <label className="block text-sm font-semibold text-gray-600 mb-1.5">Phone</label>
                   <input className="input-modern" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-600 mb-1.5">Photo URL</label>
+                  <input className="input-modern" value={form.photoUrl} onChange={(e) => setForm({ ...form, photoUrl: e.target.value })} placeholder="https://..." />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-600 mb-1.5">Bio</label>
+                  <textarea className="input-modern resize-none" rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder="Brief professional bio..." />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button onClick={handleSave} disabled={saving} className="btn-modern-primary flex items-center gap-2">

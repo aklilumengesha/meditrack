@@ -6,13 +6,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   FaHome, FaCalendarAlt, FaNotesMedical, FaUserCircle,
-  FaSignOutAlt, FaHeartbeat, FaBars, FaTimes,
+  FaSignOutAlt, FaHeartbeat, FaBars, FaTimes, FaUserMd,
 } from "react-icons/fa";
 
 import NotificationBell from "../components/shared/NotificationBell";
 
 const navItems = [
   { href: "/patient/dashboard", label: "Dashboard", icon: FaHome },
+  { href: "/patient/doctors", label: "Find Doctors", icon: FaUserMd },
   { href: "/patient/appointments", label: "My Appointments", icon: FaCalendarAlt },
   { href: "/patient/records", label: "Medical Records", icon: FaNotesMedical },
   { href: "/patient/profile", label: "My Profile", icon: FaUserCircle },

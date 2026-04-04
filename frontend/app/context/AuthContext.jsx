@@ -26,10 +26,11 @@ export const AuthProvider = ({ children }) => {
     document.cookie = `token=${token}; path=/`;
     document.cookie = `role=${role}; path=/`;
     setUser({ token, role });
-    if (role === "DOCTOR") router.push("/doctor/dashboard");
-    else if (role === "PATIENT") router.push("/patient/dashboard");
-    else if (role === "ADMIN") router.push("/admin/dashboard");
-    else router.push("/dashboard");
+    // use full reload so middleware reads cookies correctly
+    if (role === "DOCTOR") window.location.href = "/doctor/dashboard";
+    else if (role === "PATIENT") window.location.href = "/patient/dashboard";
+    else if (role === "ADMIN") window.location.href = "/admin/dashboard";
+    else window.location.href = "/landing";
   };
 
   const logout = () => {

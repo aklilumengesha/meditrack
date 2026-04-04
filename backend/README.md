@@ -1,102 +1,194 @@
-# Healthcare Backend API
+<div align="center">
 
-**Note:** For an overview of the entire project, including overall architecture, features, and a list of all technologies used, please see the main [README.md](../README.md) in the root directory.
+# 🔧 Meditrack — Backend API
 
-This project is a healthcare backend application built with NestJS. It provides RESTful API services for managing patients, medical records, and appointments. The application is structured to ensure modularity and scalability, with each major domain (Appointment, Medical Record, Patient) having its own module, controller, and service.
+[![NestJS](https://img.shields.io/badge/NestJS-10-red?style=flat-square&logo=nestjs)](https://nestjs.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://typescriptlang.org)
+[![Prisma](https://img.shields.io/badge/Prisma-5-2D3748?style=flat-square&logo=prisma)](https://prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql)](https://postgresql.org)
+[![JWT](https://img.shields.io/badge/JWT-Auth-orange?style=flat-square)](https://jwt.io)
 
-## Project Structure
+**RESTful API for the Meditrack healthcare management platform.**
 
-```plaintext
-backend/
-├── prisma/
-│   ├── migrations/           # Database migration files
-│   └── schema.prisma         # Prisma schema definition
-└── src/
-    ├── appointment/
-    │   ├── appointment.controller.ts  # Appointment-related endpoints
-    │   ├── appointment.module.ts      # Appointment module definition
-    │   └── appointment.service.ts     # Appointment business logic
-    ├── medical-record/
-    │   ├── medical-record.controller.ts  # Medical Record-related endpoints
-    │   ├── medical-record.module.ts      # Medical Record module definition
-    │   └── medical-record.service.ts     # Medical Record business logic
-    ├── patient/
-    │   ├── patient.controller.ts        # Patient-related endpoints
-    │   ├── patient.module.ts            # Patient module definition
-    │   └── patient.service.ts           # Patient business logic
-    ├── app.module.ts          # Root module that imports other modules
-    └── main.ts                # Entry point of the application
+</div>
+
+---
+
+## 📋 Overview
+
+The Meditrack backend is a NestJS application providing a secure, role-based REST API for managing patients, doctors, appointments, medical records, and notifications.
+
+---
+
+## 🏗️ Architecture
+
+```
+src/
+├── auth/              # JWT authentication, guards, strategies
+├── admin/             # Admin CRUD operations and statistics
+├── doctor/            # Doctor profile and portal endpoints
+├── patient/           # Patient management (legacy + admin)
+├── patient-portal/    # Patient-facing portal endpoints
+├── appointment/       # Appointment scheduling and status
+├── medical-record/    # Medical records with PDF generation
+├── notification/      # Real-time notification system
+├── rating/            # Doctor rating and review system
+├── core/              # Shared services (PrismaService)
+└── main.ts            # Application entry point
 ```
 
-## Description of the structure
-- `prisma/schema.prisma`: Defines the data model for the application using Prisma ORM, which simplifies database interactions.
+---
 
-- `src/appointment/`: Contains files for the `Appointment` module, including :
-  - `appointment.controller.ts` (API endpoints)
-  - `appointment.module.ts` (module setup)
-  - `appointment.service.ts` (business logic for appointments)
+## 🔑 Authentication & Authorization
 
-- `src/medical-record/`: Contains files for the Medical Record module, including :
-  - `medical-record.controller.ts` (API endpoints)
-  - `medical-record.module.ts` (module setup)
-  - `medical-record.service.ts` (business logic for medical records)
+- **JWT Bearer tokens** — 7-day expiration
+- **Role-based guards** — `ADMIN`, `DOCTOR`, `PATIENT`
+- **Rate limiting** — Global 20 req/min, auth routes stricter
+- **Password hashing** — bcrypt with salt rounds 10
+- **Suspended account check** — on every login
 
-- `src/patient/`: Contains files for the Patient module, including : 
-  - `patient.controller.ts` (API endpoints) 
-  - `patient.module.ts` (module setup), 
-  - `patient.service.ts` (business logic for patients).
+---
 
-- `app.module.ts`: The root module of the application that imports and sets up the other modules.
+## 📡 API Endpoints
 
-- `main.ts`: The entry point of the application, where the NestJS framework is initialized and the server is started.
+### Auth
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/auth/register` | Register (Doctor/Patient) |
+| POST | `/auth/login` | Login — returns JWT |
+| POST | `/auth/forgot-password` | Submit reset request |
+| POST | `/auth/change-password` | Change password (JWT required) |
 
+### Doctor Portal
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/doctors/me` | Get own profile |
+| PUT | `/doctors/me` | Update profile |
+| GET | `/doctors/me/stats` | Dashboard stats |
+| GET | `/doctors/me/appointments` | Own appointments |
+| GET | `/doctors/me/patients` | Assigned patients |
+| GET | `/doctors` | List all doctors (with ratings) |
 
-## Installation
+### Patient Portal
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/patient-portal/dashboard` | Dashboard summary |
+| GET | `/patient-portal/appointments` | Own appointments |
+| POST | `/patient-portal/appointments` | Book appointment |
+| DELETE | `/patient-portal/appointments/:id` | Cancel appointment |
+| GET | `/patient-portal/medical-records` | Own records |
+| GET | `/patient-portal/profile` | Own profile |
+| PUT | `/patient-portal/profile` | Update profile |
 
-  1. **Clone the repository:** 
-    ```bash
-    git clone <repository-url>
-    cd backend
-    ```
+### Appointments
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| PUT | `/appointments/:id/status` | Update status (PENDING/CONFIRMED/COMPLETED/CANCELLED) |
+| PUT | `/appointments/:id/reschedule` | Reschedule |
 
-  2. **Install dependencies:**
-    ```bash
-    npm install
-    ```
+### Ratings
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/ratings/appointments/:id` | Rate a completed appointment |
+| GET | `/ratings/doctors/:id` | Get doctor ratings |
 
-  3. **Set up environment variables:**
-    - Create a `.env` file in the root directory.
-    - Configure the necessary environment variables, such as database connection details for Prisma.
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/stats` | System statistics |
+| GET/DELETE | `/admin/users` | Manage users |
+| PATCH | `/admin/users/:id/toggle-active` | Suspend/activate |
+| PATCH | `/admin/users/:id/role` | Change role |
+| PATCH | `/admin/users/:id/reset-password` | Generate temp password |
+| GET/POST/PUT/DELETE | `/admin/doctors` | Doctor CRUD |
+| GET/PUT | `/admin/patients` | Patient management |
+| GET/POST/PUT/DELETE | `/admin/appointments` | Appointment management |
+| GET/DELETE | `/admin/medical-records` | Records oversight |
+| GET | `/admin/password-reset-requests` | View reset requests |
+| PATCH | `/admin/password-reset-requests/:id/resolve` | Resolve request |
 
-  4. **Generate Prisma client:**
-    ```bash
-    npx prisma generate
-    ```
+### System
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| GET | `/api/docs` | Swagger UI (dev only) |
 
-  5. **Run Prisma migrations:**
-    ```bash
-    npx prisma migrate dev
-    ```
+---
 
-## Running the Application
+## 🗄️ Database Schema
 
-### Development
-To start the application in development mode with hot-reloading:
+```
+User ──── Doctor ──── Appointment ──── DoctorRating
+     └─── Patient ───┘              └── MedicalRecord
+     └─── Notification
+     └─── PasswordResetRequest
+```
 
- ```bash
-    npm run start:dev
-  ```
+**Enums:** `Role`, `AppointmentStatus`, `Diagnosis`, `Treatment`, `Medication`, `VisitType`, `ResetRequestStatus`
 
-### Production
-To build and start the application in production mode:
+---
 
- ```bash
-    npm run build
-    npm run start:prod
-  ```
+## ⚙️ Setup
 
-### Testing 
-To run tests:
- ```bash
-   npm run test
-  ```
+### 1. Install dependencies
+```bash
+npm install
+```
+
+### 2. Configure environment
+```bash
+cp .env.example .env
+```
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/meditrack"
+JWT_SECRET="your-strong-secret-min-32-chars"
+NODE_ENV="development"
+PORT=3000
+ALLOWED_ORIGINS="http://localhost:3001"
+```
+
+### 3. Run migrations
+```bash
+npx prisma migrate deploy
+npx prisma generate
+```
+
+### 4. Start development server
+```bash
+npm run start:dev
+```
+
+### 5. API Documentation
+Visit `http://localhost:3000/api/docs`
+
+---
+
+## 🐳 Docker
+
+```bash
+docker build -t meditrack-backend .
+docker run -p 3000:3000 --env-file .env meditrack-backend
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+npm run test          # Unit tests
+npm run test:e2e      # End-to-end tests
+npm run test:cov      # Coverage report
+```
+
+---
+
+## 🔒 Security Features
+
+- JWT secret from environment variable only (no fallback)
+- Rate limiting: 20 req/min global, 10 login, 5 register, 3 forgot-password
+- CORS restricted to `ALLOWED_ORIGINS`
+- Role-based access control on all protected routes
+- bcrypt password hashing
+- Suspended account blocking
+- Swagger disabled in production

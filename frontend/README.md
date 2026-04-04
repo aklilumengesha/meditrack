@@ -1,119 +1,183 @@
-# Healthcare Frontend Application
+<div align="center">
 
-**Note:** For an overview of the entire project, including overall architecture, features, and a list of all technologies used, please see the main [README.md](../README.md) in the root directory.
+# 🎨 Meditrack — Frontend
 
-This project is the frontend part of a healthcare application built with Next.js. It provides an interface for managing appointments, medical records, and patient information. The frontend communicates with the backend API (NestJS) using Axios for data fetching.
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
+[![TypeScript](https://img.shields.io/badge/JavaScript-ES2022-yellow?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
-## Project Structure
+**Modern, responsive frontend for the Meditrack healthcare management platform.**
 
-```plaintext
-frontend/
-├── appointments/
-│   ├── page.jsx                # Page for viewing and managing appointments
+</div>
+
+---
+
+## 📋 Overview
+
+The Meditrack frontend is a Next.js 14 App Router application with three role-based portals — Patient, Doctor, and Admin — plus a public landing page. Built with Tailwind CSS and DaisyUI for a clean, professional design.
+
+---
+
+## 🗂️ Application Structure
+
+```
+app/
+├── landing/           # Public landing page (hero, features, testimonials)
+├── login/             # Sign in page
+├── register/          # Sign up page (role selector)
+├── forgot-password/   # Password reset request
+├── change-password/   # Forced password change
+│
+├── doctor/            # 🩺 Doctor Portal (JWT protected)
+│   ├── dashboard/     # Stats, upcoming appointments
+│   ├── patients/      # Patient list with search
+│   ├── appointments/  # Accept/decline/complete appointments
+│   └── profile/       # Edit profile, photo, bio
+│
+├── patient/           # 👤 Patient Portal (JWT protected)
+│   ├── dashboard/     # Summary, next appointment
+│   ├── doctors/       # Browse doctors, view profiles, ratings
+│   ├── appointments/  # Book, view, cancel, rate
+│   ├── records/       # Medical records with vitals
+│   └── profile/       # Edit personal info
+│
+├── admin/             # 🛡️ Admin Panel (JWT protected)
+│   ├── dashboard/     # Charts, stats, activity feed
+│   ├── users/         # User management (suspend, role, password)
+│   ├── doctors/       # Doctor CRUD
+│   ├── patients/      # Patient management
+│   ├── appointments/  # Appointment oversight
+│   ├── medical-records/ # Records management
+│   └── reset-requests/  # Password reset queue
+│
 ├── components/
-│   ├── appointment/
-│   │   ├── AppointmentCalendar.jsx  # Calendar view for scheduling and viewing appointments
-│   │   └── AppointmentForm.jsx      # Form for creating or updating an appointment
-│   ├── dashboard/
-│   │   └── Dashboard.jsx            # Main dashboard view with statistics and summaries
-│   ├── medical-report/
-│   │   ├── AddMedicalRecord.jsx     # Form for adding a new medical record
-│   │   └── MedicalRecord.jsx        # Component to display a medical record
-│   ├── patient/
-│   │   ├── Modal.jsx                # Reusable modal component for various actions
-│   │   ├── PatientForm.jsx          # Form for creating or updating patient information
-│   │   └── PatientList.jsx          # List of patients with details
-│   └── Header.jsx                   # Header component for navigation
-├── dashboard/
-│   ├── page.jsx                # Main page for the dashboard
-├── medical-reports/
-│   └── [patientId]/
-│       └── page.jsx            # Page for viewing medical reports by patient ID
+│   └── shared/
+│       ├── NotificationBell.jsx   # Real-time notifications
+│       ├── DashboardMockup.jsx    # Login page visual
+│       └── Pagination.jsx         # Reusable pagination
+│
+├── context/
+│   └── AuthContext.jsx    # JWT auth state management
+│
 ├── utils/
-│   └── api.js                  # API utility for connecting with the NestJS backend
-├── favicon.ico                 # Favicon for the application
-├── globals.css                 # Global CSS for styling the application
-├── layout.js                   # Layout component for consistent styling and structure
-└── page.js                     # Main entry point for the Next.js application
+│   ├── api.js             # Core API functions
+│   ├── doctorApi.js       # Doctor portal API
+│   ├── patientApi.js      # Patient portal API
+│   ├── adminApi.js        # Admin panel API
+│   └── notificationApi.js # Notification API
+│
+└── middleware.js          # Route protection by role
 ```
 
-## Description of the structure 
+---
 
-- `appointments/page.jsx`: The main page for managing appointments, with a list view and management options.
+## 🎨 Design System
 
-- `components/appointment/AppointmentCalendar.jsx`: Displays a calendar for scheduling and viewing appointments. Integrates with the backend to fetch appointment data.
+| Token | Value |
+|-------|-------|
+| Font | Inter, Poppins |
+| Primary | Blue 600 (`#2563eb`) |
+| Doctor accent | Blue 600 |
+| Patient accent | Teal 600 |
+| Admin accent | Violet 600 |
+| Border radius | `rounded-2xl` (1rem) |
+| Shadow | `shadow-sm` with hover `shadow-md` |
 
-- `components/appointment/AppointmentForm.jsx`: A form component for creating or updating appointments, with input validation.
+### CSS Utility Classes
+```css
+.card-modern        /* White card with border and shadow */
+.page-title         /* 3xl extrabold heading */
+.input-modern       /* Styled input with focus ring */
+.btn-modern-primary /* Blue primary button */
+.btn-modern-outline /* Outlined secondary button */
+.gradient-text      /* Blue-to-cyan gradient text */
+.animate-fade-in    /* Fade in + slide up animation */
+```
 
-- `components/dashboard/Dashboard.jsx`: The main dashboard displaying key statistics and summaries for healthcare operations.
+---
 
-- `components/medical-report/AddMedicalRecord.jsx`: A form component for adding a new medical record associated with a patient.
+## ⚙️ Setup
 
-- `components/medical-report/MedicalRecord.jsx`: Component for displaying medical record details.
+### 1. Install dependencies
+```bash
+npm install
+```
 
-- `components/patient/Modal.jsx`: A reusable modal component for various actions, such as editing or deleting patient data.
+### 2. Configure environment
+```bash
+cp .env.local.example .env.local
+```
 
-- `components/patient/PatientForm.jsx`: A form for creating or updating patient details with validation.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
 
-- `components/patient/PatientList.jsx`: Lists all patients, displaying essential information for each.
+### 3. Start development server
+```bash
+npm run dev
+```
 
-- `utils/api.js`: Contains Axios configurations and functions to interact with the NestJS backend API, such as fetching or submitting data for appointments, medical records, and patients.
+Open [http://localhost:3001](http://localhost:3001)
 
-- `globals.css`: Global styles for the entire application.
+---
 
-- `layout.js`: Layout component providing a consistent structure for all pages.
+## 🔐 Authentication Flow
 
+```
+User visits / → AuthContext checks localStorage
+  ├── No token → redirect to /landing
+  ├── DOCTOR → redirect to /doctor/dashboard
+  ├── PATIENT → redirect to /patient/dashboard
+  └── ADMIN → redirect to /admin/dashboard
 
-## Installation 
+Login → JWT stored in localStorage + cookie
+  └── mustChangePassword=true → redirect to /change-password
 
-1. **Clone the repository:**
+Middleware protects:
+  /doctor/* → DOCTOR role only
+  /patient/* → PATIENT role only
+  /admin/* → ADMIN role only
+```
 
-    ```bash
-        git clone <repository-url>
-        cd frontend
-    ```
+---
 
-2. **Install dependencies:**
+## 📦 Key Dependencies
 
-    ```bash
-       npm install
-    ```
+| Package | Purpose |
+|---------|---------|
+| `next` 14 | App Router, SSR, metadata |
+| `tailwindcss` + `daisyui` | Styling |
+| `@mui/x-date-pickers` | Date/time picker |
+| `recharts` | Dashboard charts |
+| `react-toastify` | Toast notifications |
+| `formik` + `yup` | Form validation |
+| `dayjs` | Date formatting |
+| `axios` | HTTP client |
+| `react-loading-skeleton` | Loading states |
+| `react-icons` | Icon library |
 
-3. **Set up environment variables:**
+---
 
-    - Create a `.env.local` file in the root directory.
-    - Add the backend API URL:
-         ```plaintext
-      NEXT_PUBLIC_API_URL=http://localhost:<backend_port>
-    ```
+## 🚀 Build & Deploy
 
-4. **Configure Axios:**
-    - The `api.js` file in `utils/` uses Axios for HTTP requests to the backend. It reads the base URL from the environment variable `NEXT_PUBLIC_API_URL`.
+```bash
+npm run build    # Production build
+npm run start    # Start production server
+npm run lint     # ESLint check
+```
 
+### Deploy to Vercel
+1. Connect GitHub repo to Vercel
+2. Set root directory to `frontend`
+3. Add environment variable: `NEXT_PUBLIC_API_URL=https://your-backend.railway.app`
+4. Deploy
 
-## Running the Application 
+---
 
-### Development 
+## 🔒 Security
 
-To start the application in development mode with hot-reloading:
-
-    ```bash
-        npm run dev
-    ```
-The app will be accessible at `http://localhost:3000` by default.
-
-### Production 
-
-To build and start the application in production mode:
-
-    ```bash
-        npm run build
-        npm run start
-    ```
-
-### Features
-
-- **🗓️ Appointment Management**: Schedule, view, and manage appointments with a calendar and list view.
-- **👤 Patient Management**: Create, update, and view patient information in a user-friendly interface.
-- **📋 Medical Records**: Add and view medical records for each patient.
-- **📊 Dashboard**: View key statistics and summaries to support healthcare operations.
+- All API calls use `NEXT_PUBLIC_API_URL` env variable
+- JWT stored in both localStorage (for API calls) and cookies (for middleware)
+- Route protection via Next.js middleware
+- No sensitive data in client-side code

@@ -110,7 +110,7 @@ export default function PatientRecordsPage() {
 
                   {record.notes && (
                     <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-                      <p className="text-xs font-semibold text-amber-600 mb-1">Doctor's Notes</p>
+                      <p className="text-xs font-semibold text-amber-600 mb-1">Doctor&apos;s Notes</p>
                       <p className="text-sm text-gray-700">{record.notes}</p>
                     </div>
                   )}

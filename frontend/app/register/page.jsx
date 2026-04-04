@@ -167,7 +167,7 @@ function RegisterForm() {
                   <span className="loading loading-spinner loading-sm"></span> Creating account...
                 </span>
               ) : (
-                <><FaUserPlus className="text-sm" /> Create Meditrack Account</>
+                <><FaUserPlus className="text-sm" /> Create Account</>
               )}
             </button>
           </form>

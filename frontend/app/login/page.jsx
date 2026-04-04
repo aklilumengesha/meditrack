@@ -134,7 +134,7 @@ export default function LoginPage() {
                 </span>
               ) : (
                 <>
-                  <FaSignInAlt className="text-sm" /> Sign In to Meditrack
+                  <FaSignInAlt className="text-sm" /> Sign In
                 </>
               )}
             </button>

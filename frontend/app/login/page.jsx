@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Link from "next/link";
 import { FaEnvelope, FaLock, FaHeartbeat, FaEye, FaEyeSlash } from "react-icons/fa";
+import DashboardMockup from "../components/shared/DashboardMockup";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -40,27 +41,30 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left panel */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 flex-col justify-between p-12">
-        <div className="flex items-center gap-3">
-          <FaHeartbeat className="text-white text-3xl" />
-          <span className="text-white text-2xl font-extrabold tracking-tight">Meditrack</span>
+      {/* Left panel — dashboard mockup */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900 flex-col justify-between p-10 overflow-hidden relative">
+        {/* Top branding */}
+        <div className="flex items-center gap-3 relative z-10">
+          <FaHeartbeat className="text-white text-2xl" />
+          <span className="text-white text-xl font-extrabold tracking-tight">Meditrack</span>
         </div>
-        <div>
-          <h2 className="text-4xl font-extrabold text-white leading-tight mb-4">
-            Your health,<br />managed smarter.
-          </h2>
-          <p className="text-blue-200 text-lg">
-            A unified platform for doctors and patients to manage appointments, records, and care.
-          </p>
+
+        {/* Dashboard mockup */}
+        <div className="relative z-10 flex-1 flex items-center justify-center py-6">
+          <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+            style={{ transform: "perspective(1000px) rotateY(-4deg) rotateX(2deg)", transformOrigin: "center" }}>
+            <DashboardMockup />
+          </div>
         </div>
-        <div className="flex gap-6">
-          {["Secure", "Fast", "Reliable"].map((tag) => (
-            <span key={tag} className="bg-white/10 text-white text-sm px-4 py-2 rounded-full font-medium">
-              {tag}
-            </span>
-          ))}
+
+        {/* Bottom tagline */}
+        <div className="relative z-10">
+          <p className="text-white font-bold text-lg leading-snug mb-1">Everything you need to manage healthcare.</p>
+          <p className="text-blue-300 text-sm">Patients, doctors, appointments and records — all in one place.</p>
         </div>
+
+        {/* Background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full opacity-10 blur-3xl pointer-events-none" />
       </div>
 
       {/* Right panel */}

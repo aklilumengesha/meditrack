@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Link from "next/link";
 import { FaHeartbeat, FaUserMd, FaUserInjured, FaEye, FaEyeSlash } from "react-icons/fa";
+import DashboardMockup from "../components/shared/DashboardMockup";
 import { useSearchParams } from "next/navigation";
 
 const BASE_URL = "http://localhost:3000";
@@ -44,31 +45,26 @@ function RegisterForm() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left panel */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 flex-col justify-between p-12">
-        <div className="flex items-center gap-3">
-          <FaHeartbeat className="text-white text-3xl" />
-          <span className="text-white text-2xl font-extrabold tracking-tight">Meditrack</span>
+      {/* Left panel — dashboard mockup */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900 flex-col justify-between p-10 overflow-hidden relative">
+        <div className="flex items-center gap-3 relative z-10">
+          <FaHeartbeat className="text-white text-2xl" />
+          <span className="text-white text-xl font-extrabold tracking-tight">Meditrack</span>
         </div>
-        <div>
-          <h2 className="text-4xl font-extrabold text-white leading-tight mb-4">
-            Join Meditrack<br />today.
-          </h2>
-          <p className="text-blue-200 text-lg">
-            Create your account and start managing your health journey.
-          </p>
+
+        <div className="relative z-10 flex-1 flex items-center justify-center py-6">
+          <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+            style={{ transform: "perspective(1000px) rotateY(-4deg) rotateX(2deg)", transformOrigin: "center" }}>
+            <DashboardMockup />
+          </div>
         </div>
-        <div className="space-y-3">
-          {[
-            { icon: FaUserMd, text: "Doctors — manage patients and appointments" },
-            { icon: FaUserInjured, text: "Patients — book appointments and view records" },
-          ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-3 text-blue-100 text-sm">
-              <Icon className="text-blue-300 text-lg flex-shrink-0" />
-              <span>{text}</span>
-            </div>
-          ))}
+
+        <div className="relative z-10">
+          <p className="text-white font-bold text-lg leading-snug mb-1">Join thousands of doctors and patients.</p>
+          <p className="text-blue-300 text-sm">Create your account and start managing healthcare smarter.</p>
         </div>
+
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full opacity-10 blur-3xl pointer-events-none" />
       </div>
 
       {/* Right panel */}

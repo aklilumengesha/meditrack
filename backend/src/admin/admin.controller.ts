@@ -45,4 +45,9 @@ export class AdminController {
 
   // Settings
   @Get('specialties') getSpecialties() { return this.adminService.getSpecialties(); }
+
+  // Password Reset Requests
+  @Get('password-reset-requests') getResetRequests() { return this.adminService.getPasswordResetRequests(); }
+  @Patch('password-reset-requests/:id/resolve') resolveRequest(@Param('id', ParseIntPipe) id: number) { return this.adminService.resolvePasswordResetRequest(id); }
+  @Patch('password-reset-requests/:id/dismiss') dismissRequest(@Param('id', ParseIntPipe) id: number) { return this.adminService.dismissPasswordResetRequest(id); }
 }

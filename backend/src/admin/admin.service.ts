@@ -220,4 +220,45 @@ export class AdminService {
     const doctors = await this.prisma.doctor.findMany({ select: { specialty: true }, distinct: ['specialty'] });
     return doctors.map(d => d.specialty);
   }
+
+  // ─── PASSWORD RESET REQUESTS ─────────────────────────────────────────────────
+
+  async getPasswordResetRequests() {
+    return this.prisma.passwordResetRequest.findMany({
+      include: { user: { select: { email: true, role: true,
+        doctor: { select: { firstName: true, lastName: true } },
+        patient: { select: { firstName: true, lastName: true } },
+      }}},
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async resolvePasswordResetRequest(requestId: number) {
+    const request = await this.prisma.passwordResetRequest.findUnique({ where: { id: requestId } });
+    if (!request) throw new NotFoundException(`Request ${requestId} not found`);
+
+    // Generate temp password
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+    const tempPassword = Array.from({ length: 10 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    const hashed = await bcrypt.hash(tempPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: request.userId },
+      data: { password: hashed, mustChangePassword: true },
+    });
+
+    await this.prisma.passwordResetRequest.update({
+      where: { id: requestId },
+      data: { status: 'RESOLVED', resolvedAt: new Date() },
+    });
+
+    return { tempPassword };
+  }
+
+  async dismissPasswordResetRequest(requestId: number) {
+    return this.prisma.passwordResetRequest.update({
+      where: { id: requestId },
+      data: { status: 'RESOLVED', resolvedAt: new Date() },
+    });
+  }
 }

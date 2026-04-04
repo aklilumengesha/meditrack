@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminAppointments, createAdminAppointment, updateAdminAppointment, deleteAdminAppointment } from "../../utils/adminApi";
+import { getAdminAppointments, createAdminAppointment, updateAdminAppointment, deleteAdminAppointment, exportToCSV } from "../../utils/adminApi";
 import { getAdminDoctors, getAdminPatients } from "../../utils/adminApi";
-import { FaCalendarAlt, FaTrash, FaSearch, FaPlus, FaEdit } from "react-icons/fa";
+import { FaCalendarAlt, FaTrash, FaSearch, FaPlus, FaEdit, FaDownload } from "react-icons/fa";
+import Pagination from "../../components/shared/Pagination";
 import dayjs from "dayjs";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,6 +23,8 @@ export default function AdminAppointmentsPage() {
   const [editId, setEditId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   const fetchAll = async () => {
     const [appts, docs, pats] = await Promise.all([getAdminAppointments(), getAdminDoctors(), getAdminPatients()]);
@@ -63,6 +66,7 @@ export default function AdminAppointmentsPage() {
   const filtered = appointments.filter((a) =>
     `${a.patient?.firstName} ${a.patient?.lastName} ${a.doctor?.firstName} ${a.doctor?.lastName}`.toLowerCase().includes(search.toLowerCase())
   );
+  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   return (
     <div className="space-y-6">
@@ -76,6 +80,10 @@ export default function AdminAppointmentsPage() {
             <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
             <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="input-modern pl-10 w-56" />
           </div>
+          <button onClick={() => exportToCSV(filtered.map(a => ({ patient: `${a.patient?.firstName} ${a.patient?.lastName}`, doctor: `Dr. ${a.doctor?.firstName} ${a.doctor?.lastName}`, date: dayjs(a.date).format("MMM D, YYYY"), time: dayjs(a.startTime).format("HH:mm"), reason: a.reason || "" })), "appointments")}
+            className="btn-modern-outline flex items-center gap-2 text-sm">
+            <FaDownload className="text-xs" /> Export CSV
+          </button>
           <button onClick={() => { setForm(emptyForm); setModal("create"); }} className="btn-modern-primary flex items-center gap-2">
             <FaPlus className="text-xs" /> Add Appointment
           </button>
@@ -92,7 +100,9 @@ export default function AdminAppointmentsPage() {
           <tbody className="divide-y divide-gray-50">
             {loading ? [...Array(5)].map((_, i) => (
               <tr key={i}><td colSpan={6} className="px-5 py-3"><Skeleton height={32} /></td></tr>
-            )) : filtered.map((appt) => (
+            )) : filtered.length === 0 ? (
+              <tr><td colSpan={6} className="px-5 py-10 text-center text-gray-400">No appointments found</td></tr>
+            ) : paginated.map((appt) => (
               <tr key={appt.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-2">
@@ -117,8 +127,7 @@ export default function AdminAppointmentsPage() {
           </tbody>
         </table>
       </div>
-
-      {/* Create / Edit Modal */}
+      <Pagination total={filtered.length} page={page} perPage={PER_PAGE} onChange={setPage} />
       {modal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl animate-fade-in">

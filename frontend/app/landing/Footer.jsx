@@ -61,12 +61,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm">© {new Date().getFullYear()} Meditrack. All rights reserved.</p>
-          <div className="flex gap-6 text-sm">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-          </div>
+        <div className="border-t border-slate-800 pt-8 flex items-center justify-center">
+          <p className="text-sm text-center">
+            © {new Date().getFullYear()} Meditrack. Developed by{" "}
+            <a
+              href="https://aklilu-mengesha-portfolio.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 font-semibold hover:text-blue-300 transition-colors hover:underline"
+            >
+              Aklilu Mengesha
+            </a>
+          </p>
         </div>
       </div>
     </footer>

@@ -9,7 +9,7 @@ import CTASection from "./CTASection";
 import Footer from "./Footer";
 
 export const metadata = {
-  title: "Meditrack — Modern Healthcare Management",
+  title: "Meditrack | Modern Healthcare Management",
   description: "Connect with verified doctors, manage appointments, and access your medical records — all in one secure platform.",
 };
 

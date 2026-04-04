@@ -14,7 +14,7 @@ export function middleware(request) {
   if (isPublic) return NextResponse.next();
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/landing", request.url));
   }
 
   if (doctorRoutes.some((r) => pathname.startsWith(r)) && role !== "DOCTOR") {

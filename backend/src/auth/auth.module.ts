@@ -11,7 +11,7 @@ import { CoreModule } from '../core/core.module';
     CoreModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'meditrack_secret',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '7d' },
     }),
   ],

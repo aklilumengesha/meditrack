@@ -172,9 +172,32 @@ export class AppointmentService {
 
   // Function to update appointment status (doctor confirms/completes)
   async updateStatus(id: number, status: string): Promise<Appointment> {
-    const appt = await this.prisma.appointment.findUnique({ where: { id } });
+    const appt = await this.prisma.appointment.findUnique({
+      where: { id },
+      include: { patient: { include: { user: true } }, doctor: true },
+    });
     if (!appt) throw new NotFoundException(`Appointment with ID ${id} not found`);
-    return this.prisma.appointment.update({ where: { id }, data: { status: status as any } });
+
+    const updated = await this.prisma.appointment.update({
+      where: { id },
+      data: { status: status as any },
+    });
+
+    // Send notification to patient
+    if (appt.patient?.user?.id) {
+      const messages: Record<string, string> = {
+        CONFIRMED: `Your appointment with Dr. ${appt.doctor.firstName} ${appt.doctor.lastName} has been confirmed.`,
+        COMPLETED: `Your appointment with Dr. ${appt.doctor.firstName} ${appt.doctor.lastName} is marked as completed.`,
+        CANCELLED: `Your appointment with Dr. ${appt.doctor.firstName} ${appt.doctor.lastName} has been cancelled.`,
+      };
+      if (messages[status]) {
+        await this.prisma.notification.create({
+          data: { userId: appt.patient.user.id, message: messages[status] },
+        });
+      }
+    }
+
+    return updated;
   }
   async reschedule(id: number, newDate: Date, newStartTime: Date): Promise<Appointment> {
       this.validateTimeRange(newStartTime);

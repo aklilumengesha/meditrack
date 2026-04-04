@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import Link from "next/link";
-import { FaHeartbeat, FaUserMd, FaUserInjured } from "react-icons/fa";
+import { FaHeartbeat, FaUserMd, FaUserInjured, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
 const BASE_URL = "http://localhost:3000";
@@ -19,6 +19,7 @@ function RegisterForm() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
@@ -130,7 +131,13 @@ function RegisterForm() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
-              <input type="password" required className="input-modern" value={form.password} onChange={set("password")} placeholder="Min. 6 characters" />
+              <div className="relative">
+                <input type={showPassword ? "text" : "password"} required className="input-modern pr-11" value={form.password} onChange={set("password")} placeholder="Min. 6 characters" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
 
             {role === "DOCTOR" && (

@@ -20,7 +20,7 @@ export class AdminController {
   @Delete('users/:id') deleteUser(@Param('id', ParseIntPipe) id: number) { return this.adminService.deleteUser(id); }
   @Patch('users/:id/toggle-active') toggleActive(@Param('id', ParseIntPipe) id: number) { return this.adminService.toggleUserActive(id); }
   @Patch('users/:id/role') changeRole(@Param('id', ParseIntPipe) id: number, @Body() body: { role: string }) { return this.adminService.changeUserRole(id, body.role); }
-  @Patch('users/:id/reset-password') resetPassword(@Param('id', ParseIntPipe) id: number, @Body() body: { password: string }) { return this.adminService.resetUserPassword(id, body.password); }
+  @Patch('users/:id/reset-password') resetPassword(@Param('id', ParseIntPipe) id: number) { return this.adminService.resetUserPassword(id); }
 
   // Doctors
   @Get('doctors') getAllDoctors() { return this.adminService.getAllDoctors(); }

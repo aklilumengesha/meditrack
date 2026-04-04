@@ -63,14 +63,15 @@ export class AuthService {
 
     if (!user.active) throw new UnauthorizedException('Your account has been suspended. Please contact the administrator.');
 
-    return this.signToken(user.id, user.email, user.role);
+    return this.signToken(user.id, user.email, user.role, user.mustChangePassword);
   }
 
-  private signToken(userId: number, email: string, role: string) {
+  private signToken(userId: number, email: string, role: string, mustChangePassword = false) {
     const payload = { sub: userId, email, role };
     return {
       access_token: this.jwtService.sign(payload),
       role,
+      mustChangePassword,
     };
   }
 }

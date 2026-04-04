@@ -72,11 +72,21 @@ export class AdminService {
     return this.prisma.user.update({ where: { id }, data: { role: role as any } });
   }
 
-  async resetUserPassword(id: number, newPassword: string) {
+  async resetUserPassword(id: number) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException(`User ${id} not found`);
-    const hashed = await bcrypt.hash(newPassword, 10);
-    return this.prisma.user.update({ where: { id }, data: { password: hashed } });
+
+    // Generate a secure random temp password
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+    const tempPassword = Array.from({ length: 10 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+
+    const hashed = await bcrypt.hash(tempPassword, 10);
+    await this.prisma.user.update({
+      where: { id },
+      data: { password: hashed, mustChangePassword: true },
+    });
+
+    return { tempPassword };
   }
 
   async deleteUser(id: number) {

@@ -12,14 +12,10 @@ export class MedicalRecordService {
 
   async create(createMedicalRecordDto: CreateMedicalRecordDto): Promise<MedicalRecord> {
     try {
-      
-      console.log("DTO Received:", createMedicalRecordDto);
-  
-      
       if (typeof createMedicalRecordDto.date === 'string') {
         createMedicalRecordDto.date = new Date(createMedicalRecordDto.date);
       }
-  
+
       if (!(createMedicalRecordDto.date instanceof Date) || isNaN(createMedicalRecordDto.date.getTime())) {
         throw new BadRequestException('Invalid date format.');
       }

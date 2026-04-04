@@ -42,11 +42,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel — dashboard mockup */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900 flex-col justify-between p-10 overflow-hidden relative">
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex-col justify-between p-8 overflow-hidden relative border-r border-gray-100">
         {/* Top branding */}
-        <div className="flex items-center gap-3 relative z-10">
-          <FaHeartbeat className="text-white text-2xl" />
-          <span className="text-white text-xl font-extrabold tracking-tight">Meditrack</span>
+        <div className="flex items-center gap-2.5 relative z-10">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-sm">
+            <FaHeartbeat className="text-white text-sm" />
+          </div>
+          <span className="text-gray-900 text-lg font-extrabold tracking-tight">Meditrack</span>
         </div>
 
         {/* Dashboard mockup */}
@@ -58,12 +60,9 @@ export default function LoginPage() {
 
         {/* Bottom tagline */}
         <div className="relative z-10">
-          <p className="text-white font-bold text-lg leading-snug mb-1">Everything you need to manage healthcare.</p>
-          <p className="text-blue-300 text-sm">Patients, doctors, appointments and records — all in one place.</p>
+          <p className="text-gray-800 font-bold text-base leading-snug mb-1">Everything you need to manage healthcare.</p>
+          <p className="text-gray-500 text-sm">Patients, doctors, appointments and records — all in one place.</p>
         </div>
-
-        {/* Background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full opacity-10 blur-3xl pointer-events-none" />
       </div>
 
       {/* Right panel */}
